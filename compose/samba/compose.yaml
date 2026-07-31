@@ -1,0 +1,19 @@
+services:
+  samba:
+    image: dockurr/samba:latest
+    container_name: samba
+    restart: unless-stopped
+
+    environment:
+      NAME: "shares"
+      USER: "${SAMBA_USER}"
+      PASS: "${SAMBA_PASS}"
+      UID: "1000"
+      GID: "1001"
+
+    ports:
+      - "445:445"
+
+    volumes:
+      - /srv/nas/shares:/storage:z
+      - ./smb.conf:/etc/samba/smb.conf:ro

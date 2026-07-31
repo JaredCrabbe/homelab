@@ -44,3 +44,15 @@ mistakes:
 - incorrectly inputted command causing docker to not know wherei was telling it to go
 - attempted to write the txt file from fedora shell  instead  of from the container
 - forgot --rm option and created many containers
+
+Set up samba server for file sharing
+
+Learned: 
+- permissions required for file systems
+- more docker compose, used it to start the samba server and to set port etc
+- how to configure samba server
+
+mistakes
+- many typos
+- permission issues
+
