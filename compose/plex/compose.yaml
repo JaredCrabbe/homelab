@@ -2,14 +2,11 @@ services:
    plex:
     image: lscr.io/linuxserver/plex
     container_name: plex
-    
+    network_mode: host
     restart: unless-stopped
     security_opt:
-     - label=disable 
-
-  
-    ports:
-    - "32400:32400"
+     - label=disable
+    
     
     environment:
       PUID: "1000"
@@ -34,4 +31,5 @@ services:
 
 volumes:
   plex-config:
-    external: true 
+    external: true
+

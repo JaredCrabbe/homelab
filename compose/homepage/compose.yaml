@@ -1,0 +1,18 @@
+services:
+  homepage:
+    image: ghcr.io/gethomepage/homepage:latest
+    container_name: Homepage
+    restart: unless-stopped
+    networks: 
+      - homelab
+    
+    volumes:
+      - ./config:/app/config
+    environment:
+      HOMEPAGE_ALLOWED_HOSTS: homepage.home.arpa
+      HOMEPAGE_VAR_PLEX_TOKEN: ${PLEX_TOKEN}
+
+
+networks:
+  homelab:
+    external: true 

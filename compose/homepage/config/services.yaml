@@ -1,0 +1,21 @@
+---
+# For configuration options and examples, please see:
+# https://gethomepage.dev/configs/services/
+
+- Media:
+    - Plex:
+        href: http://plex.home.arpa
+        description: Movies & TV Shows
+        widget:
+          type: plex
+          url: http://192.168.10.151:32400
+          key: "{{HOMEPAGE_VAR_PLEX_TOKEN}}"
+
+- Networking:
+    - Adguard:
+        href: http://adguard.home.arpa
+        description: DNS Homepage
+    - NPM:
+        href: http://npm.home.arpa
+        description: Proxy manager
+

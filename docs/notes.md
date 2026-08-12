@@ -56,3 +56,14 @@ mistakes
 - many typos
 - permission issues
 
+2026-08-02
+
+Set up plex server
+
+ Learned:
+- group permissions and file permissions
+- learned more about compose syntax
+
+mistakes:
+- used wrong image at first
+- spelling errors

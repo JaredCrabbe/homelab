@@ -1,0 +1,32 @@
+services:
+  adguard-home:
+    image: adguard/adguardhome:latest
+    container_name: adguard-home
+
+    restart: unless-stopped
+    networks:
+      - homelab
+
+
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+
+      - "8088:8088"
+
+
+    volumes:
+      - adguard-work:/opt/adguardhome/work
+      - adguard-conf:/opt/adguardhome/conf
+
+volumes:
+   adguard-work:
+     external: true
+
+
+   adguard-conf:
+      external: true
+
+networks:
+    homelab:
+      external: true

@@ -1,0 +1,29 @@
+services:
+  npm:
+    image: jc21/nginx-proxy-manager:latest
+    container_name: nginx-proxy-manager
+
+    restart: unless-stopped
+    networks:
+      - homelab
+
+    ports:
+    - "80:80"
+    - "81:81"
+    - "443:443"
+
+    volumes:
+    - npm-data:/data
+    - npm-letsencrypt:/etc/letsencrypt
+
+
+volumes:
+ npm-data:
+    external: true
+ npm-letsencrypt:
+    external: true
+
+networks:
+  homelab:
+    external: true
+   # name: homelab
