@@ -1,6 +1,7 @@
 import json
 import subprocess
 import urllib.request
+from pathlib import Path
 
 MONITORED_CONTAINERS = {
     "Homepage",
@@ -11,6 +12,7 @@ MONITORED_CONTAINERS = {
 }
 
 NTFY_URL = "http://192.168.10.151:8082/homelab"
+STATE_FILE = Path("state.json")
 
 cmd = [
     "docker",
@@ -31,10 +33,38 @@ process = subprocess.Popen(
     bufsize=1,
 )
 
-states = {}
+
 
 print("Homelab monitor started.")
 print("Monitoring:", ", ".join(sorted(MONITORED_CONTAINERS)))
+
+
+
+def load_states():
+    if not STATE_FILE.exists():
+        return {}
+
+    try:
+        with STATE_FILE.open("r", encoding="utf-8") as file:
+            return json.load(file)
+
+    except (json.JSONDecodeError, OSError):
+        print("[STATE] Could not load state file. Starting with empty state.")
+        return {}
+
+states = load_states()
+print(f"[STATE] Loaded {len(states)} saved container states.")
+
+
+def save_states(states):
+    try:
+        with STATE_FILE.open("w", encoding="utf-8") as file:
+            json.dump(states, file, indent=2)
+            file.write("\n")
+
+    except OSError as e:
+        print(f"[STATE] Failed to save state: {e}")
+
 
 
 def send_notification(message):
@@ -76,6 +106,7 @@ for line in process.stdout:
         # First event establishes the baseline
         if previous is None:
             states[name] = status
+            save_states(states)
             print(f"[STATE] {name} baseline set to {status}")
             continue
 
@@ -86,6 +117,7 @@ for line in process.stdout:
 
         # State actually changed
         states[name] = status
+        save_states(states)
 
         print(f"[STATE] {name}: {previous} -> {status}")
 

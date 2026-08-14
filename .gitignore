@@ -2,4 +2,4 @@
 .env.*
 secrets/
 *.log
-
+state.json
