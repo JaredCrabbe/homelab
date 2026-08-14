@@ -1,0 +1,22 @@
+services:
+  ntfy:
+    image: binwiederhier/ntfy:latest
+    container_name: ntfy
+    command:
+      - serve
+    environment:
+      - TZ=Africa/Johannesburg
+
+    volumes:
+      - ./cache:/var/cache/ntfy
+      - ./config:/etc/ntfy
+    
+    ports: 
+      - "8082:80" 
+    restart: unless-stopped
+
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://127.0.0.1/ || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
