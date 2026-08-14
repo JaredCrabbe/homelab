@@ -14,12 +14,12 @@ services:
       TZ: Africa/Johannesburg
       VERSION: docker
     
-
+    
     volumes:
       - plex-config:/config
       - /srv/nas/media:/media:z
       - /tmp:/transcode
-
+    
     deploy:
       resources:
         reservations:
@@ -27,8 +27,16 @@ services:
             - driver: nvidia
               count: 1
               capabilities: [gpu]  
+    
+    
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS HTTP://127.0.0.1:32400/identity >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
 
 
+    
 volumes:
   plex-config:
     external: true

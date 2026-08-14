@@ -10,7 +10,10 @@ services:
       - ./config:/app/config
     environment:
       HOMEPAGE_ALLOWED_HOSTS: homepage.home.arpa
+      LOG_LEVEL: debug
       HOMEPAGE_VAR_PLEX_TOKEN: ${PLEX_TOKEN}
+      HOMEPAGE_VAR_SERVICE_USER: ${SERVICE_USER}
+      HOMEPAGE_VAR_SERVICE_PASS: ${SERVICE_PASS}
 
 
 networks:

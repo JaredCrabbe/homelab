@@ -18,6 +18,13 @@ services:
     volumes:
       - adguard-work:/opt/adguardhome/work
       - adguard-conf:/opt/adguardhome/conf
+      
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://127.0.0.1:8088/ || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
 
 volumes:
    adguard-work:

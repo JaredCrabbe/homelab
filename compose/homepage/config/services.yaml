@@ -15,7 +15,13 @@
     - Adguard:
         href: http://adguard.home.arpa
         description: DNS Homepage
+        widget:
+          type: adguard
+          url: http://192.168.10.151:8088
+          username: "{{HOMEPAGE_VAR_SERVICE_USER}}"
+          password: "{{HOMEPAGE_VAR_SERVICE_PASS}}"
     - NPM:
         href: http://npm.home.arpa
         description: Proxy manager
+
 
