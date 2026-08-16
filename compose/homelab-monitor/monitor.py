@@ -85,6 +85,8 @@ states = load_states()
 print(f"[STATE] Loaded {len(states)} saved container states.")
 
 
+
+
 def save_states(states):
     temp_file = STATE_FILE.with_suffix(".tmp")
 
@@ -145,6 +147,142 @@ def format_duration(seconds):
     parts.append(f"{seconds}s")
 
     return " ".join(parts)
+
+
+def get_current_health(name):
+    try:
+        result = subprocess.run(
+            [
+                "docker",
+                "inspect",
+                "--format",
+                "{{if .State.Health}}{{.State.Health.Status}}{{end}}",
+                name,
+            ],
+            capture_output=True,
+            text=True,
+            timeout=10,
+        )
+
+        if result.returncode != 0:
+            print(
+                f"[RECONCILE] Failed to inspect {name}: "
+                f"{result.stderr.strip()}"
+            )
+            return None
+
+        health = result.stdout.strip()
+
+        if not health:
+            print(
+                f"[RECONCILE] {name} has no health check."
+            )
+            return None
+
+        return f"health_status: {health}"
+
+    except (subprocess.SubprocessError, OSError) as e:
+        print(
+            f"[RECONCILE] Error inspecting {name}: {e}"
+        )
+        return None
+
+
+def reconcile_states():
+    print("[RECONCILE] Checking current container health...")
+
+    now = time.time()
+
+    for name in sorted(MONITORED_CONTAINERS):
+        current_status = get_current_health(name)
+
+        if current_status is None:
+            continue
+
+        previous_state = states.get(name)
+
+        if previous_state is None:
+            states[name] = {
+                "status": current_status,
+                "unhealthy_since": (
+                    now
+                    if current_status == "health_status: unhealthy"
+                    else None
+                ),
+            }
+
+            print(
+                f"[RECONCILE] {name}: "
+                f"no saved state -> {current_status}"
+            )
+
+            continue
+
+        previous_status = previous_state.get("status")
+
+        if previous_status == current_status:
+            print(
+                f"[RECONCILE] {name}: "
+                f"unchanged ({current_status})"
+            )
+            continue
+
+        print(
+            f"[RECONCILE] {name}: "
+            f"{previous_status} -> {current_status}"
+        )
+
+        if current_status == "health_status: unhealthy":
+            states[name] = {
+                "status": current_status,
+                "unhealthy_since": now,
+            }
+
+            send_notification(
+                f"🚨 HOMELAB ALERT\n\n"
+                f"Container: {name}\n"
+                f"Status: UNHEALTHY\n"
+                f"Host: homelab\n"
+                f"Time: {format_time(now)}\n"
+                f"Detected during startup reconciliation"
+            )
+
+        elif current_status == "health_status: healthy":
+            unhealthy_since = previous_state.get(
+                "unhealthy_since"
+            )
+
+            states[name] = {
+                "status": current_status,
+                "unhealthy_since": None,
+            }
+
+            if unhealthy_since is not None:
+                downtime = now - unhealthy_since
+
+                send_notification(
+                    f"✅ HOMELAB RECOVERY\n\n"
+                    f"Container: {name}\n"
+                    f"Status: HEALTHY\n"
+                    f"Host: homelab\n"
+                    f"Time: {format_time(now)}\n"
+                    f"Downtime: {format_duration(downtime)}\n"
+                    f"Detected during startup reconciliation"
+                )
+            else:
+                send_notification(
+                    f"✅ HOMELAB RECOVERY\n\n"
+                    f"Container: {name}\n"
+                    f"Status: HEALTHY\n"
+                    f"Host: homelab\n"
+                    f"Time: {format_time(now)}\n"
+                    f"Detected during startup reconciliation"
+                )
+
+    save_states(states)
+    print("[RECONCILE] Startup reconciliation complete.")
+    reconcile_states()
+    print("[MONITOR] Starting Docker event monitoring...")
 
 
 for line in process.stdout:
