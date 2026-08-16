@@ -5,6 +5,7 @@ import time
 from datetime import datetime
 from pathlib import Path
 
+
 MONITORED_CONTAINERS = {
     "Homepage",
     "adguard-home",
@@ -16,6 +17,7 @@ MONITORED_CONTAINERS = {
 NTFY_URL = "http://192.168.10.151:8082/homelab"
 STATE_FILE = Path("state.json")
 
+
 cmd = [
     "docker",
     "events",
@@ -25,7 +27,12 @@ cmd = [
     "type=container",
     "--filter",
     "event=health_status",
+    "--filter",
+    "event=die",
+    "--filter",
+    "event=start",
 ]
+
 
 process = subprocess.Popen(
     cmd,
@@ -34,6 +41,7 @@ process = subprocess.Popen(
     text=True,
     bufsize=1,
 )
+
 
 print("Homelab monitor started.")
 print("Monitoring:", ", ".join(sorted(MONITORED_CONTAINERS)))
@@ -85,8 +93,6 @@ states = load_states()
 print(f"[STATE] Loaded {len(states)} saved container states.")
 
 
-
-
 def save_states(states):
     temp_file = STATE_FILE.with_suffix(".tmp")
 
@@ -123,7 +129,9 @@ def send_notification(message):
 
 
 def format_time(timestamp):
-    return datetime.fromtimestamp(timestamp).strftime("%Y-%m-%d %H:%M:%S")
+    return datetime.fromtimestamp(timestamp).strftime(
+        "%Y-%m-%d %H:%M:%S"
+    )
 
 
 def format_duration(seconds):
@@ -149,14 +157,25 @@ def format_duration(seconds):
     return " ".join(parts)
 
 
-def get_current_health(name):
+def get_current_status(name):
+    """
+    Return the container's actual current state.
+
+    Possible results:
+
+        health_status: healthy
+        health_status: unhealthy
+        health_status: starting
+        container_status: stopped
+    """
+
     try:
         result = subprocess.run(
             [
                 "docker",
                 "inspect",
                 "--format",
-                "{{if .State.Health}}{{.State.Health.Status}}{{end}}",
+                "{{.State.Status}}|{{if .State.Health}}{{.State.Health.Status}}{{end}}",
                 name,
             ],
             capture_output=True,
@@ -171,17 +190,25 @@ def get_current_health(name):
             )
             return None
 
-        health = result.stdout.strip()
+        output = result.stdout.strip()
 
-        if not health:
+        if not output:
+            return None
+
+        container_state, health_state = output.split("|", 1)
+
+        if container_state != "running":
+            return "container_status: stopped"
+
+        if not health_state:
             print(
-                f"[RECONCILE] {name} has no health check."
+                f"[RECONCILE] {name} is running but has no health check."
             )
             return None
 
-        return f"health_status: {health}"
+        return f"health_status: {health_state}"
 
-    except (subprocess.SubprocessError, OSError) as e:
+    except (subprocess.SubprocessError, OSError, ValueError) as e:
         print(
             f"[RECONCILE] Error inspecting {name}: {e}"
         )
@@ -189,24 +216,33 @@ def get_current_health(name):
 
 
 def reconcile_states():
-    print("[RECONCILE] Checking current container health...")
+    """
+    Compare the saved state with the actual Docker state when
+    the monitor starts.
+    """
+
+    print("[RECONCILE] Checking current container states...")
 
     now = time.time()
 
     for name in sorted(MONITORED_CONTAINERS):
-        current_status = get_current_health(name)
+        current_status = get_current_status(name)
 
         if current_status is None:
             continue
 
         previous_state = states.get(name)
 
+        # No saved state yet.
         if previous_state is None:
             states[name] = {
                 "status": current_status,
                 "unhealthy_since": (
                     now
-                    if current_status == "health_status: unhealthy"
+                    if current_status in (
+                        "health_status: unhealthy",
+                        "container_status: stopped",
+                    )
                     else None
                 ),
             }
@@ -220,6 +256,7 @@ def reconcile_states():
 
         previous_status = previous_state.get("status")
 
+        # Nothing changed.
         if previous_status == current_status:
             print(
                 f"[RECONCILE] {name}: "
@@ -232,10 +269,43 @@ def reconcile_states():
             f"{previous_status} -> {current_status}"
         )
 
-        if current_status == "health_status: unhealthy":
+        previous_incident_time = previous_state.get(
+            "unhealthy_since"
+        )
+
+        # Container is currently stopped.
+        if current_status == "container_status: stopped":
+            incident_time = (
+                previous_incident_time
+                if previous_incident_time is not None
+                else now
+            )
+
             states[name] = {
                 "status": current_status,
-                "unhealthy_since": now,
+                "unhealthy_since": incident_time,
+            }
+
+            send_notification(
+                f"🚨 HOMELAB ALERT\n\n"
+                f"Container: {name}\n"
+                f"Status: STOPPED\n"
+                f"Host: homelab\n"
+                f"Time: {format_time(now)}\n"
+                f"Detected during startup reconciliation"
+            )
+
+        # Container is unhealthy.
+        elif current_status == "health_status: unhealthy":
+            incident_time = (
+                previous_incident_time
+                if previous_incident_time is not None
+                else now
+            )
+
+            states[name] = {
+                "status": current_status,
+                "unhealthy_since": incident_time,
             }
 
             send_notification(
@@ -247,18 +317,15 @@ def reconcile_states():
                 f"Detected during startup reconciliation"
             )
 
+        # Container has recovered.
         elif current_status == "health_status: healthy":
-            unhealthy_since = previous_state.get(
-                "unhealthy_since"
-            )
-
             states[name] = {
                 "status": current_status,
                 "unhealthy_since": None,
             }
 
-            if unhealthy_since is not None:
-                downtime = now - unhealthy_since
+            if previous_incident_time is not None:
+                downtime = now - previous_incident_time
 
                 send_notification(
                     f"✅ HOMELAB RECOVERY\n\n"
@@ -269,20 +336,30 @@ def reconcile_states():
                     f"Downtime: {format_duration(downtime)}\n"
                     f"Detected during startup reconciliation"
                 )
-            else:
-                send_notification(
-                    f"✅ HOMELAB RECOVERY\n\n"
-                    f"Container: {name}\n"
-                    f"Status: HEALTHY\n"
-                    f"Host: homelab\n"
-                    f"Time: {format_time(now)}\n"
-                    f"Detected during startup reconciliation"
-                )
+
+        # Container is starting.
+        elif current_status == "health_status: starting":
+            states[name] = {
+                "status": current_status,
+                "unhealthy_since": previous_incident_time,
+            }
+
+        # Other health state.
+        else:
+            states[name] = {
+                "status": current_status,
+                "unhealthy_since": previous_incident_time,
+            }
 
     save_states(states)
+
     print("[RECONCILE] Startup reconciliation complete.")
-    reconcile_states()
-    print("[MONITOR] Starting Docker event monitoring...")
+
+
+# Reconcile once when the monitor starts.
+reconcile_states()
+
+print("[MONITOR] Starting Docker event monitoring...")
 
 
 for line in process.stdout:
@@ -291,7 +368,7 @@ for line in process.stdout:
 
         attributes = event.get("Actor", {}).get("Attributes", {})
         name = attributes.get("name")
-        status = event.get("Action")
+        action = event.get("Action")
 
         if name not in MONITORED_CONTAINERS:
             continue
@@ -302,6 +379,24 @@ for line in process.stdout:
             previous_status = None
         else:
             previous_status = previous_state.get("status")
+
+        # Docker container died.
+        if action == "die":
+            status = "container_status: stopped"
+
+        # Docker container started.
+        elif action == "start":
+            status = get_current_status(name)
+
+            if status is None:
+                continue
+
+        # Docker health event.
+        elif action.startswith("health_status:"):
+            status = action
+
+        else:
+            continue
 
         print(
             f"[EVENT] {name}: {status} "
@@ -314,7 +409,10 @@ for line in process.stdout:
                 "status": status,
                 "unhealthy_since": (
                     time.time()
-                    if status == "health_status: unhealthy"
+                    if status in (
+                        "health_status: unhealthy",
+                        "container_status: stopped",
+                    )
                     else None
                 ),
             }
@@ -333,12 +431,55 @@ for line in process.stdout:
             continue
 
         now = time.time()
+        previous_incident_time = previous_state.get(
+            "unhealthy_since"
+        )
 
-        # Container became unhealthy.
-        if status == "health_status: unhealthy":
+        # ---------------------------------------------------------
+        # CONTAINER STOPPED
+        # ---------------------------------------------------------
+
+        if status == "container_status: stopped":
+            incident_time = (
+                previous_incident_time
+                if previous_incident_time is not None
+                else now
+            )
+
             states[name] = {
                 "status": status,
-                "unhealthy_since": now,
+                "unhealthy_since": incident_time,
+            }
+
+            save_states(states)
+
+            print(
+                f"[STATE] {name}: "
+                f"{previous_status} -> {status}"
+            )
+
+            send_notification(
+                f"🚨 HOMELAB ALERT\n\n"
+                f"Container: {name}\n"
+                f"Status: STOPPED\n"
+                f"Host: homelab\n"
+                f"Time: {format_time(now)}"
+            )
+
+        # ---------------------------------------------------------
+        # CONTAINER UNHEALTHY
+        # ---------------------------------------------------------
+
+        elif status == "health_status: unhealthy":
+            incident_time = (
+                previous_incident_time
+                if previous_incident_time is not None
+                else now
+            )
+
+            states[name] = {
+                "status": status,
+                "unhealthy_since": incident_time,
             }
 
             save_states(states)
@@ -356,10 +497,11 @@ for line in process.stdout:
                 f"Time: {format_time(now)}"
             )
 
-        # Container recovered.
-        elif status == "health_status: healthy":
-            unhealthy_since = previous_state.get("unhealthy_since")
+        # ---------------------------------------------------------
+        # CONTAINER RECOVERED
+        # ---------------------------------------------------------
 
+        elif status == "health_status: healthy":
             states[name] = {
                 "status": status,
                 "unhealthy_since": None,
@@ -372,8 +514,8 @@ for line in process.stdout:
                 f"{previous_status} -> {status}"
             )
 
-            if unhealthy_since is not None:
-                downtime = now - unhealthy_since
+            if previous_incident_time is not None:
+                downtime = now - previous_incident_time
 
                 send_notification(
                     f"✅ HOMELAB RECOVERY\n\n"
@@ -383,24 +525,32 @@ for line in process.stdout:
                     f"Time: {format_time(now)}\n"
                     f"Downtime: {format_duration(downtime)}"
                 )
-            else:
-                # This can happen if the monitor starts with an already
-                # unhealthy state that wasn't recorded with a timestamp.
-                send_notification(
-                    f"✅ HOMELAB RECOVERY\n\n"
-                    f"Container: {name}\n"
-                    f"Status: HEALTHY\n"
-                    f"Host: homelab\n"
-                    f"Time: {format_time(now)}"
-                )
 
-        # Unknown health status transition.
+        # ---------------------------------------------------------
+        # CONTAINER STARTING
+        # ---------------------------------------------------------
+
+        elif status == "health_status: starting":
+            states[name] = {
+                "status": status,
+                "unhealthy_since": previous_incident_time,
+            }
+
+            save_states(states)
+
+            print(
+                f"[STATE] {name}: "
+                f"{previous_status} -> {status}"
+            )
+
+        # ---------------------------------------------------------
+        # OTHER HEALTH STATE
+        # ---------------------------------------------------------
+
         else:
             states[name] = {
                 "status": status,
-                "unhealthy_since": previous_state.get(
-                    "unhealthy_since"
-                ),
+                "unhealthy_since": previous_incident_time,
             }
 
             save_states(states)
