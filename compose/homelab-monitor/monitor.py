@@ -209,15 +209,13 @@ def get_current_status(name):
         return f"health_status: {health_state}"
 
     except (subprocess.SubprocessError, OSError, ValueError) as e:
-        print(
-            f"[RECONCILE] Error inspecting {name}: {e}"
-        )
+        print(f"[RECONCILE] Error inspecting {name}: {e}")
         return None
 
 
 def reconcile_states():
     """
-    Compare the saved state with the actual Docker state when
+    Compare saved states with the actual Docker state when
     the monitor starts.
     """
 
