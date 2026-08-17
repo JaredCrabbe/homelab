@@ -8,6 +8,7 @@ from pathlib import Path
 
 SOURCE = Path.home() / "homelab"
 BACKUP_ROOT = Path("/srv/nas/backups/homelab")
+RETENTION_COUNT = 7
 
 EXCLUDED_DIRS = {
     ".git",
@@ -31,6 +32,20 @@ def should_include(path):
 
     return True
 
+def cleanup_old_backups():
+    backups = [
+        path
+        for path in BACKUP_ROOT.iterdir()
+        if path.is_dir()
+    ]
+    backups.sort(reverse=True)
+
+    old_backups = backups[RETENTION_COUNT:]
+
+    for backup in old_backups:
+        shutil.rmtree(backup)
+        print(f"[DRY RUN] Succesfully removed old backup: {backup.name}")
+
 BACKUP_ROOT.mkdir(parents=True, exist_ok=True)
 
 timestamp = time.strftime("%Y-%m-%d_%H-%M-%S")
@@ -44,3 +59,5 @@ for path in SOURCE.rglob("*"):
 
         destination.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(path, destination)
+
+cleanup_old_backups()
