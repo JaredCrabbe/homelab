@@ -44,7 +44,7 @@ def cleanup_old_backups():
 
     for backup in old_backups:
         shutil.rmtree(backup)
-        print(f"[DRY RUN] Succesfully removed old backup: {backup.name}")
+        print(f"[CLEANUP] Succesfully removed old backup: {backup.name}")
 
 BACKUP_ROOT.mkdir(parents=True, exist_ok=True)
 
