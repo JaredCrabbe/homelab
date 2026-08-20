@@ -1,6 +1,6 @@
 # Homelab
 
-My personal Linux-based homelab used to build practical experience with Linux administration, Docker, networking, storage, self-hosted services, automation, and monitoring.
+My personal Linux-based homelab used to build practical experience with Linux administration, Docker, networking, storage, self-hosted services, automation, monitoring, and backup/recovery.
 
 The homelab is both a learning environment and a practical portfolio of infrastructure projects.
 
@@ -20,6 +20,8 @@ The main goals of this homelab are to gain practical experience with:
 - Python automation
 - Service monitoring
 - systemd
+- Backup and recovery
+- Data integrity verification
 - Git and version control
 - Troubleshooting real infrastructure problems
 
@@ -48,33 +50,30 @@ The system is also used as a normal desktop, so the homelab is designed around m
 
 ## Architecture
 
-The current environment is built primarily around Docker containers managed with Docker Compose.
+The current environment is built primarily around Docker containers managed with Docker Compose, with additional Python automation managed through systemd.
 
 ```text
                          Homelab Host
-                       Fedora Linux
-                            |
-                     Docker Engine
-                            |
-       +--------------------+--------------------+
-       |                    |                    |
-       v                    v                    v
-   Networking            Services             Storage
-       |                    |                    |
-   AdGuard Home         Homepage              NAS HDD
-   Nginx Proxy          Plex                  Samba
-   Manager
-       |
-       +--------------------+
-                            |
-                            v
-                    Homelab Monitor
-                            |
-                            v
-                           ntfy
-                            |
-                            v
-                     Notifications
+                          Fedora Linux
+                               |
+              +----------------+----------------+
+              |                                 |
+              v                                 v
+         Docker Engine                       systemd
+              |                                 |
+    +---------+---------+             +---------+---------+
+    |         |         |             |                   |
+    v         v         v             v                   v
+Networking Services   Storage    Homelab Monitor     Backup System
+    |         |         |             |                   |
+AdGuard    Homepage   NAS HDD          v                   v
+NPM        Plex       Samba           ntfy            /srv/nas/backups
+ntfy                                    |                   |
+                                        v                   v
+                                  Notifications        SHA-256 Verify
+                                                            |
+                                                            v
+                                                       Retention
 ```
 
 ---
@@ -90,6 +89,7 @@ The current environment is built primarily around Docker containers managed with
 | Samba | Network file sharing / NAS |
 | ntfy | Notification delivery |
 | Homelab Monitor | Docker health and container-state monitoring |
+| Homelab Backup | Automated configuration backup and integrity verification |
 | Nginx | Web server and Docker learning project |
 
 ---
@@ -99,36 +99,41 @@ The current environment is built primarily around Docker containers managed with
 ```text
 homelab/
 ├── .gitignore
-├── .env
 ├── README.md
 │
 ├── compose/
-│   ├── nginx/
-│   ├── samba/
-│   ├── plex/
-│   ├── nginx-proxy-manager/
 │   ├── adguard-home/
+│   ├── homelab-monitor/
 │   ├── homepage/
-│   └── homelab-monitor/
+│   ├── nginx-proxy-manager/
+│   ├── ntfy/
+│   ├── plex/
+│   └── samba/
 │
-└── docs/
-    ├── 01-homelab-overview.md
-    ├── 02-fedora-linux-foundation.md
-    ├── 03-docker-containerization.md
-    ├── 04-nginx.md
-    ├── 05-nas-storage.md
-    ├── 06-samba.md
-    ├── 07-plex.md
-    ├── 08-nginx-proxy-manager.md
-    ├── 09-adguard-home.md
-    ├── 10-homepage.md
-    ├── 11-homelab-monitor.md
-    └── 12-automated-backups.md
+├── docs/
+│   ├── 00-Homelab-Overview.md
+│   ├── 01-Fedora-Linux-Foundation.md
+│   ├── 02-Docker-and-Compose.md
+│   ├── 03-Nginx-Container.md
+│   ├── 04-NAS-Storage.md
+│   ├── 05-Samba-SMB.md
+│   ├── 06-Plex-Media-Server.md
+│   ├── 07-Homelab-Monitor.md
+│   ├── 08-Automated-backups.md
+│   ├── 09-nginx-proxy-manager.md
+│   ├── 10-adguard-home.md
+│   └── 11-homepage.md
+│
+└── scripts/
+    └── homelab-backup/
+        └── backup.py
 ```
 
-The `compose/` directory contains the actual infrastructure configuration.
+The `compose/` directory contains the Docker infrastructure configuration.
 
-The `docs/` directory contains detailed documentation explaining what was built, why it was built, problems encountered, solutions, and lessons learned.
+The `scripts/` directory contains host-level automation that does not require Docker.
+
+The `docs/` directory contains detailed documentation explaining what was built, why it was built, problems encountered, solutions, testing, and lessons learned.
 
 The root `README.md` serves as the overview and entry point.
 
@@ -136,67 +141,49 @@ The root `README.md` serves as the overview and entry point.
 
 ## Projects
 
-### 01 — Homelab Overview
+### 00 — Homelab Overview
 
 The overall homelab project and its goals.
 
-[Documentation](docs/01-homelab-overview.md)
+[Documentation](docs/00-Homelab-Overview.md)
 
-### 02 — Fedora/Linux Foundation
+### 01 — Fedora/Linux Foundation
 
 The Linux environment used as the foundation for the homelab.
 
-[Documentation](docs/02-fedora-linux-foundation.md)
+[Documentation](docs/01-Fedora-Linux-Foundation.md)
 
-### 03 — Docker & Containerization
+### 02 — Docker & Containerization
 
 Learning Docker Engine, containers, images, volumes, networking, and Docker Compose.
 
-[Documentation](docs/03-docker-containerization.md)
+[Documentation](docs/02-Docker-and-Compose.md)
 
-### 04 — Nginx
+### 03 — Nginx
 
 A simple Dockerised web server used as an early Docker and Compose project.
 
-[Documentation](docs/04-nginx.md)
+[Documentation](docs/03-Nginx-Container.md)
 
-### 05 — NAS Storage
+### 04 — NAS Storage
 
 A 2.7 TB external HDD configured as NAS storage and mounted at `/srv/nas`.
 
-[Documentation](docs/05-nas-storage.md)
+[Documentation](docs/04-NAS-Storage.md)
 
-### 06 — Samba / SMB
+### 05 — Samba / SMB
 
 Network file sharing using Samba, allowing Windows and other clients to access the NAS.
 
-[Documentation](docs/06-samba.md)
+[Documentation](docs/05-Samba-SMB.md)
 
-### 07 — Plex
+### 06 — Plex
 
 Self-hosted media server running in Docker, including GPU/transcoding configuration.
 
-[Documentation](docs/07-plex.md)
+[Documentation](docs/06-Plex-Media-Server.md)
 
-### 08 — Nginx Proxy Manager
-
-Reverse-proxy infrastructure for routing web requests to internal services.
-
-[Documentation](docs/08-nginx-proxy-manager.md)
-
-### 09 — AdGuard Home
-
-Local DNS and network-level ad blocking.
-
-[Documentation](docs/09-adguard-home.md)
-
-### 10 — Homepage
-
-Central dashboard for accessing and monitoring homelab services.
-
-[Documentation](docs/10-homepage.md)
-
-### 11 — Homelab Monitor
+### 07 — Homelab Monitor
 
 A custom Python monitoring service that watches Docker health and container lifecycle events.
 
@@ -213,15 +200,61 @@ The monitor currently handles:
 - ntfy notifications
 - systemd service management
 
-[Documentation](docs/11-homelab-monitor.md)
+[Documentation](docs/07-Homelab-Monitor.md)
 
-### 12 — Automated Backups
+### 08 — Automated Backups
 
-Planned project.
+A custom Python backup system that automatically protects the homelab configuration.
 
-The goal is to develop an automated backup system for important homelab data and configuration.
+The backup system currently provides:
 
-[Documentation](docs/12-automated-backups.md)
+- Daily automated backups
+- NAS-backed storage
+- Timestamped backup directories
+- Seven-backup retention
+- File and directory exclusions
+- SHA-256 checksum generation
+- Backup integrity verification
+- Corruption detection
+- Automatic cleanup of incomplete backups
+- systemd service management
+- systemd timer scheduling
+- NAS mount dependency
+- Failure detection
+- ntfy failure notifications
+- Tested restore procedure
+
+Backups are stored under:
+
+```text
+/srv/nas/backups/homelab
+```
+
+The backup runs automatically every day at:
+
+```text
+13:00
+```
+
+[Documentation](docs/08-Automated-backups.md)
+
+### 09 — Nginx Proxy Manager
+
+Reverse-proxy infrastructure for routing web requests to internal services.
+
+[Documentation](docs/09-nginx-proxy-manager.md)
+
+### 10 — AdGuard Home
+
+Local DNS and network-level ad blocking.
+
+[Documentation](docs/10-adguard-home.md)
+
+### 11 — Homepage
+
+Central dashboard for accessing and monitoring homelab services.
+
+[Documentation](docs/11-homepage.md)
 
 ---
 
@@ -274,6 +307,123 @@ This allows the monitor to remember incidents across restarts rather than treati
 
 ---
 
+## Automated Backups
+
+The homelab configuration is automatically backed up to the NAS using a custom Python backup system.
+
+The backup script is located at:
+
+```text
+~/homelab/scripts/homelab-backup/backup.py
+```
+
+Backups are stored at:
+
+```text
+/srv/nas/backups/homelab
+```
+
+Each backup uses a timestamped directory:
+
+```text
+YYYY-MM-DD_HH-MM-SS
+```
+
+The system retains the newest seven backups.
+
+### Backup Process
+
+```text
+13:00 systemd timer
+        |
+        v
+Check /srv/nas mount dependency
+        |
+        v
+Run backup.py
+        |
+        v
+Copy homelab configuration
+        |
+        v
+Generate SHA-256 checksums
+        |
+        v
+Verify copied files
+        |
+   +----+----+
+   |         |
+ PASS       FAIL
+   |         |
+   v         v
+Keep      Remove incomplete
+backup    backup
+   |         |
+   v         v
+Apply     systemd failure
+retention    |
+             v
+            ntfy
+             |
+             v
+        Notification
+```
+
+### Integrity Verification
+
+Every completed backup contains:
+
+```text
+checksums.sha256
+```
+
+The backup script calculates SHA-256 hashes for the copied files and verifies the copied data before considering the backup successful.
+
+Corruption detection was tested by deliberately modifying a backed-up file after checksum generation.
+
+The system correctly detected:
+
+```text
+Checksum mismatch: .gitignore
+```
+
+and removed the invalid backup.
+
+### Failure Handling
+
+If copying or verification fails:
+
+1. The error is reported.
+2. The incomplete backup directory is removed.
+3. Python exits with a non-zero status.
+4. systemd marks the backup service as failed.
+5. `homelab-backup-failure.service` is triggered.
+6. An ntfy notification is sent.
+
+### Restore Testing
+
+A backup was restored into a temporary clean location:
+
+```text
+/tmp/homelab-restore-test
+```
+
+The restored files were verified using:
+
+```bash
+sha256sum -c checksums.sha256
+```
+
+Every restored file returned:
+
+```text
+OK
+```
+
+This confirmed that the stored backup could be successfully restored and passed integrity verification.
+
+---
+
 ## Storage
 
 The NAS storage is provided by a 2.7 TB external HDD.
@@ -284,7 +434,7 @@ The main storage mount is:
 /srv/nas
 ```
 
-The NAS contains directories for areas such as:
+The NAS contains:
 
 ```text
 backups/
@@ -294,6 +444,8 @@ shares/
 ```
 
 Samba provides network access to the storage using SMB.
+
+The `backups/` directory also stores the automated homelab configuration backups.
 
 ---
 
@@ -319,15 +471,23 @@ Modern SMB connections use TCP port:
 445
 ```
 
+### Notifications
+
+ntfy provides local notification delivery for monitoring and backup failures.
+
 ---
 
 ## Security & Configuration
 
 Secrets and environment-specific configuration are kept outside version control.
 
-The root `.env` file is intentionally excluded from Git using `.gitignore`.
+`.env` files are intentionally excluded from Git using `.gitignore`.
 
-The repository should therefore contain configuration templates or documentation rather than passwords, tokens, or other sensitive values.
+Runtime files such as monitor state, logs, Python cache files, and other temporary data are also excluded where appropriate.
+
+The backup system can preserve configuration files that are excluded from Git, providing a local recovery mechanism without publishing sensitive configuration to the Git repository.
+
+Passwords, tokens, and other sensitive values should never be committed to version control.
 
 ---
 
@@ -342,8 +502,11 @@ The repository tracks:
 - Configuration files
 - Documentation
 - Infrastructure changes
+- Automation scripts
 
-Sensitive files such as `.env` and runtime state that should not be version controlled are excluded where appropriate.
+Sensitive files such as `.env`, logs, Python cache files, and runtime state that should not be version controlled are excluded where appropriate.
+
+Git provides version history for the homelab configuration, while the NAS backup system provides an additional local recovery mechanism.
 
 ---
 
@@ -366,6 +529,17 @@ Examples include:
 - NVIDIA container/runtime issues
 - NVIDIA driver/library mismatches affecting Plex
 - Container startup failures
+- systemd timer scheduling
+- NAS mount dependencies
+- Backup retention
+- Python exception handling
+- Incomplete backup cleanup
+- SHA-256 checksum generation
+- Backup integrity verification
+- Corruption detection
+- systemd failure handling
+- Automated failure notifications
+- Backup restore testing
 
 These problems have been documented in the individual project documentation where relevant.
 
@@ -391,14 +565,19 @@ These problems have been documented in the individual project documentation wher
 - [x] Startup state reconciliation
 - [x] Stopped-container detection
 - [x] systemd integration
+- [x] Automated daily backups
+- [x] Backup retention
+- [x] Backup integrity verification
+- [x] Incomplete backup cleanup
+- [x] Backup failure notifications
+- [x] Backup restore testing
 - [x] Git documentation
 
 ### Next
 
-- [ ] Automated backups
-- [ ] Continue improving NAS backup strategy
 - [ ] Expand monitoring as new services are added
 - [ ] Continue improving infrastructure documentation
+- [ ] Continue building new homelab services and automation
 
 ---
 
@@ -406,10 +585,11 @@ These problems have been documented in the individual project documentation wher
 
 This homelab demonstrates practical experience with:
 
-**Linux**
+### Linux
 
 - Fedora
 - systemd
+- systemd timers
 - journalctl
 - permissions
 - mounts
@@ -417,7 +597,7 @@ This homelab demonstrates practical experience with:
 - services
 - troubleshooting
 
-**Docker**
+### Docker
 
 - Docker Engine
 - Docker Compose
@@ -428,7 +608,7 @@ This homelab demonstrates practical experience with:
 - Docker events
 - Container networking
 
-**Networking**
+### Networking
 
 - DNS
 - SMB
@@ -437,16 +617,32 @@ This homelab demonstrates practical experience with:
 - Port forwarding
 - Local network services
 
-**Automation**
+### Automation
 
 - Python
 - subprocess
-- Docker API/CLI interaction
+- Docker CLI interaction
 - JSON state management
 - Event-driven monitoring
 - ntfy notifications
+- Automated backups
+- Backup retention
+- Exception handling
+- Failure handling
 
-**Development**
+### Backup & Recovery
+
+- NAS-based backups
+- Automated scheduling
+- Backup retention policies
+- SHA-256 hashing
+- Integrity verification
+- Corruption detection
+- Incomplete backup cleanup
+- Restore procedures
+- Restore verification
+
+### Development
 
 - Git
 - Git commits
@@ -466,7 +662,8 @@ When something breaks, the goal is to:
 2. Gather evidence.
 3. Test possible causes.
 4. Fix the underlying issue.
-5. Document what happened.
-6. Improve the infrastructure where appropriate.
+5. Verify the solution.
+6. Document what happened.
+7. Improve the infrastructure where appropriate.
 
 This makes the homelab both a learning environment and a practical demonstration of troubleshooting and IT infrastructure skills.
