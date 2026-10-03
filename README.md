@@ -10,12 +10,12 @@ The homelab is both a learning environment and a practical portfolio of infrastr
 
 The environment currently runs on my personal PC using:
 
-- Fedora Linux
-- Intel Core i5-10400F
-- NVIDIA GeForce RTX 4060
-- 16 GB RAM
-- 1 TB NVMe SSD
-- 2.7 TB external HDD for NAS storage
+* Fedora Linux
+* Intel Core i5-10400F
+* NVIDIA GeForce RTX 4060
+* 16 GB RAM
+* 1 TB NVMe SSD
+* 2.7 TB external HDD for NAS storage
 
 Most services run as Docker containers managed with Docker Compose, while host-level automation uses Python and systemd.
 
@@ -23,35 +23,37 @@ Most services run as Docker containers managed with Docker Compose, while host-l
 
 ## Services
 
-| Service | Purpose |
-|---|---|
-| Homepage | Central homelab dashboard |
-| AdGuard Home | DNS and network-level ad blocking |
-| Nginx Proxy Manager | Reverse proxy and service routing |
-| Plex | Self-hosted media server |
-| Samba | SMB network file sharing |
-| ntfy | Notification delivery |
-| Homelab Monitor | Docker health and state monitoring |
-| Homelab Backup | Automated backup and integrity verification |
+| Service             | Purpose                                     |
+| ------------------- | ------------------------------------------- |
+| Homepage            | Central homelab dashboard                   |
+| AdGuard Home        | DNS and network-level ad blocking           |
+| Nginx Proxy Manager | Reverse proxy and service routing           |
+| Plex                | Self-hosted media server                    |
+| Samba               | SMB network file sharing                    |
+| ntfy                | Notification delivery                       |
+| Homelab Monitor     | Docker health and state monitoring          |
+| Homelab Backup      | Automated backup and integrity verification |
+| Network Monitor     | Network connectivity and state monitoring   |
 
 ---
 
 ## Projects
 
-| # | Project | What I Learned |
-|---|---|---|
-| 00 | [Homelab Overview](docs/00-Homelab-Overview.md) | Infrastructure planning and architecture |
-| 01 | [Fedora Linux Foundation](docs/01-Fedora-Linux-Foundation.md) | Linux administration and system configuration |
-| 02 | [Docker & Compose](docs/02-Docker-and-Compose.md) | Containers, images, volumes, networking and Compose |
-| 03 | [Nginx Container](docs/03-Nginx-Container.md) | Docker deployment, ports and bind mounts |
-| 04 | [NAS Storage](docs/04-NAS-Storage.md) | Filesystems, mounting, permissions and storage |
-| 05 | [Samba / SMB](docs/05-Samba-SMB.md) | Network file sharing and Windows/Linux interoperability |
-| 06 | [Plex Media Server](docs/06-Plex-Media-Server.md) | Media hosting, Docker and GPU configuration |
-| 07 | [Homelab Monitor](docs/07-Homelab-Monitor.md) | Python, Docker events, state tracking, systemd and notifications |
-| 08 | [Automated Backups](docs/08-Automated-backups.md) | Python automation, systemd timers, SHA-256 verification and recovery |
-| 09 | [Nginx Proxy Manager](docs/09-nginx-proxy-manager.md) | Reverse proxies and internal service routing |
-| 10 | [AdGuard Home](docs/10-adguard-home.md) | DNS and network filtering |
-| 11 | [Homepage](docs/11-homepage.md) | Service dashboards and Docker integration |
+| #  | Project                                                       | What I Learned                                                                             |
+| -- | ------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| 00 | [Homelab Overview](docs/00-Homelab-Overview.md)               | Infrastructure planning and architecture                                                   |
+| 01 | [Fedora Linux Foundation](docs/01-Fedora-Linux-Foundation.md) | Linux administration and system configuration                                              |
+| 02 | [Docker & Compose](docs/02-Docker-and-Compose.md)             | Containers, images, volumes, networking and Compose                                        |
+| 03 | [Nginx Container](docs/03-Nginx-Container.md)                 | Docker deployment, ports and bind mounts                                                   |
+| 04 | [NAS Storage](docs/04-NAS-Storage.md)                         | Filesystems, mounting, permissions and storage                                             |
+| 05 | [Samba / SMB](docs/05-Samba-SMB.md)                           | Network file sharing and Windows/Linux interoperability                                    |
+| 06 | [Plex Media Server](docs/06-Plex-Media-Server.md)             | Media hosting, Docker and GPU configuration                                                |
+| 07 | [Homelab Monitor](docs/07-Homelab-Monitor.md)                 | Python, Docker events, state tracking, systemd and notifications                           |
+| 08 | [Automated Backups](docs/08-Automated-backups.md)             | Python automation, systemd timers, SHA-256 verification and recovery                       |
+| 09 | [Nginx Proxy Manager](docs/09-nginx-proxy-manager.md)         | Reverse proxies and internal service routing                                               |
+| 10 | [AdGuard Home](docs/10-adguard-home.md)                       | DNS and network filtering                                                                  |
+| 11 | [Homepage](docs/11-homepage.md)                               | Service dashboards and Docker integration                                                  |
+| 12 | [Network Monitoring](docs/12-Network-Monitor.md)              | Network interfaces, ICMP, packet loss, latency, state detection, systemd and notifications |
 
 ---
 
@@ -83,7 +85,8 @@ homelab/
 │   ├── 08-Automated-backups.md
 │   ├── 09-nginx-proxy-manager.md
 │   ├── 10-adguard-home.md
-│   └── 11-homepage.md
+│   ├── 11-homepage.md
+│   └── 12-Network-Monitor.md
 │
 └── scripts/
     ├── homelab-backup/
@@ -105,49 +108,57 @@ homelab/
 
 ### Linux
 
-- Fedora Linux
-- systemd services and timers
-- journalctl
-- Filesystems and mounts
-- Users, groups and permissions
-- Service troubleshooting
+* Fedora Linux
+* systemd services and timers
+* journalctl
+* Filesystems and mounts
+* Users, groups and permissions
+* Service troubleshooting
 
 ### Docker
 
-- Docker Engine
-- Docker Compose
-- Container networking
-- Volumes and bind mounts
-- Health checks
-- Docker events
+* Docker Engine
+* Docker Compose
+* Container networking
+* Volumes and bind mounts
+* Health checks
+* Docker events
 
 ### Networking
 
-- DNS
-- SMB
-- HTTP/HTTPS
-- Reverse proxies
-- Local network services
+* DNS
+* SMB
+* HTTP/HTTPS
+* Reverse proxies
+* Local network services
+* Network interface monitoring
+* ICMP/ping
+* Packet-loss detection
+* Latency monitoring
+* Gateway and internet connectivity testing
+* Network state-change detection
 
 ### Automation & Monitoring
 
-- Python
-- Event-driven monitoring
-- Persistent state
-- Failure handling
-- ntfy notifications
-- Automated backups
-- SHA-256 integrity verification
-- Restore testing
+* Python
+* Event-driven monitoring
+* Persistent state
+* State-change detection
+* Failure and recovery handling
+* ntfy notifications
+* systemd automation
+* Automated backups
+* SHA-256 integrity verification
+* Restore testing
 
 ### Development
 
-- Git
-- GitHub
-- Version control
-- Configuration management
-- Technical documentation
-- Troubleshooting
+* Git
+* GitHub
+* Version control
+* Configuration management
+* Technical documentation
+* Troubleshooting
 
 ---
 
@@ -155,44 +166,33 @@ homelab/
 
 ### Completed
 
-- [x] Linux homelab foundation
-- [x] Docker and Docker Compose
-- [x] Nginx
-- [x] NAS storage
-- [x] Samba / SMB
-- [x] Plex Media Server
-- [x] Nginx Proxy Manager
-- [x] AdGuard Home
-- [x] Homepage
-- [x] ntfy notifications
-- [x] Custom Docker health monitor
-- [x] Automated backup system
-- [x] Backup integrity verification
-- [x] Backup failure notifications
-- [x] Restore testing
+* [x] Linux homelab foundation
+* [x] Docker and Docker Compose
+* [x] Nginx
+* [x] NAS storage
+* [x] Samba / SMB
+* [x] Plex Media Server
+* [x] Nginx Proxy Manager
+* [x] AdGuard Home
+* [x] Homepage
+* [x] ntfy notifications
+* [x] Custom Docker health monitor
+* [x] Persistent monitoring state
+* [x] Automated backup system
+* [x] Backup integrity verification
+* [x] Backup failure notifications
+* [x] Restore testing
+* [x] Network connectivity monitoring
+* [x] Network state detection
+* [x] Network state-change notifications
+* [x] Automated network monitoring with systemd
+* [x] Network monitor journal logging
 
-### In Progress
+### Next
 
-- [ ] Basic network monitoring
-
----
-
-## Current Project
-
-### HOMELAB-18 — Basic Network Monitoring
-
-Building a Python-based network monitoring system to gain practical experience with:
-
-- Host availability monitoring
-- ICMP/ping
-- Latency
-- Network service checks
-- Incident detection
-- Recovery detection
-- Persistent monitoring state
-- ntfy alerts
-
-The project will be documented once completed.
+* [ ] Expand monitoring as new services are added
+* [ ] Continue improving infrastructure documentation
+* [ ] Build additional homelab services and automation
 
 ---
 
