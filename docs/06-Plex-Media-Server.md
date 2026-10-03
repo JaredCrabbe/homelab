@@ -2,79 +2,28 @@
 
 ## Overview
 
-Plex was added as a self-hosted media service running in Docker.
+Plex is deployed as a Docker service for self-hosted media streaming. Media is stored on the NAS, while Plex application data is kept in a named Docker volume so metadata can persist independently of the container lifecycle.
 
-The Plex project was also used to learn about GPU access, Docker runtime configuration, Linux device permissions, and troubleshooting hardware/software integration.
+## Container and persistence
 
-## Container
+Plex uses the LinuxServer.io Plex image. A Docker health check queries the local Plex identity endpoint so Docker can report whether the service is responding. The deployment has also been used to explore hardware access and transcoding behaviour.
 
-The Plex container uses the LinuxServer.io Plex image.
+## Hardware and driver troubleshooting
 
-The container was configured to use the system's media/transcoding hardware, including `/dev/dri` devices.
+The homelab encountered a Plex startup failure caused by an NVIDIA library version mismatch after a driver update. Docker referenced a library file that no longer existed, and `nvidia-smi` reported a driver/library mismatch. A host reboot resolved the mismatch and Plex started correctly afterward.
 
-The Plex logs confirmed that the container could access:
-
-```text
-/dev/dri/renderD128
-/dev/dri/card1
-```
-
-## Health check
-
-Plex has a Docker health check based on the local Plex identity endpoint:
-
-```text
-curl -fsS HTTP://127.0.0.1:32400/identity >/dev/null || exit 1
-```
-
-This allows Docker to report whether Plex is healthy.
-
-## NVIDIA troubleshooting
-
-A real startup failure occurred where Plex could not create its container task because Docker attempted to mount an NVIDIA library that no longer existed:
-
-```text
-failed to fulfil mount request:
-open /usr/lib64/libEGL_nvidia.so.610.43.03:
-no such file or directory
-```
-
-The host had newer NVIDIA 610.57 libraries installed.
-
-`nvidia-smi` also reported:
-
-```text
-Failed to initialize NVML:
-Driver/library version mismatch
-```
-
-The installed packages showed multiple NVIDIA kernel module versions, including the older 610.43.03 version and newer 610.57.04 packages.
-
-The NVIDIA container toolkit was installed and Docker reported the NVIDIA runtime and CDI devices.
-
-A system restart resolved the driver/library mismatch and Plex subsequently started correctly.
+This was a useful exercise in distinguishing an application problem from a host driver/runtime problem and using logs and system tools to investigate it.
 
 ## Monitoring integration
 
-The Plex failure became a useful real-world test of the homelab monitor.
-
-After the NVIDIA issue was fixed, the monitor detected Plex recovering and sent a notification containing:
-
-- Container name
-- Status
-- Host
-- Recovery time
-- Downtime
+Plex is monitored by the custom Docker health monitor. A real Plex/NVIDIA incident was used to validate detection and recovery notifications, including the reporting of incident duration when a previous unhealthy state had been recorded.
 
 ## Skills demonstrated
 
-- Docker Compose
-- Plex deployment
+- Docker Compose and persistent volumes
+- NAS-backed media storage
 - Docker health checks
-- `/dev/dri` device access
-- NVIDIA container integration
-- NVIDIA driver troubleshooting
-- `nvidia-smi`
-- `nvidia-container-cli`
-- Docker runtime troubleshooting
-- Service monitoring
+- Hardware/transcoding troubleshooting
+- NVIDIA driver/runtime diagnostics
+- Container logs and service recovery
+- Integrating a real incident with monitoring and alerting

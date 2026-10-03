@@ -1,26 +1,52 @@
---docker is a service to create containerized applications
+# Docker Notes
 
---An image is the rules or a template for the container
+## Core concepts
 
---a container is similar to a vm however it uses the host machines kernel to run
-and isolates the applications hosted within
+- **Image:** template used to create containers.
+- **Container:** a running or stopped instance of an image.
+- **Port publishing:** maps a host port to a container port, for example `8080:80` for Nginx.
+- **Bind mount:** maps a specific host path into a container. Useful for editable content and configuration.
+- **Named volume:** Docker-managed persistent storage, useful for application data such as Plex metadata.
+- **Compose:** declarative service configuration that makes deployments repeatable.
+- **Health check:** command Docker runs to report whether a service is healthy.
+- **Restart policy:** controls whether Docker restarts a container after it exits.
+- **Docker events:** event stream useful for reacting to container lifecycle and health changes.
 
---a volume is a persistent data storage medium that docker manages, they remain
-independent of the container it is stored on the docker host
+## Useful commands
 
---a bind mount is a way to mount a specific file or directory from host machine
-into a container.
+```bash
+docker ps
+docker ps -a
+docker images
+docker volume ls
+docker network ls
+docker logs <container>
+docker inspect <container>
+docker events
+docker compose up -d
+docker compose ps
+docker compose logs -f
+docker compose down
+```
 
---docker options must come before image name
---exit code of 127 often indicates command not found
---docker exec executes a program inside the container (e.g docker exec -it name \
-/bin/bash)
--- docker inspect tells you EVERYTHING ABOUT A CONTAINER
+Run Compose commands from the relevant project directory or use `-f` to specify a Compose file.
 
+## Homelab examples
 
+- Nginx uses a bind mount for custom HTML and publishes host port `8080` to container port `80`.
+- Plex uses a named volume for persistent application data and NAS-backed media storage.
+- Samba uses a bind-mounted `smb.conf` and the NAS share directory.
+- Homepage, AdGuard Home, Plex, Nginx Proxy Manager, and Samba are watched by the custom Docker health monitor.
 
--- docker compose reads a compose.yaml file to launch and run a container
--- you specify your rules names etc from the compose.yaml file
--- restart policies are rules for when the container should and shouldnt restart
--- bind mounts tell the container where to look for files and information
--- volumes are docker controlled persistent storage you mount them to a container using -v volumename:desiredcontainerfile
+## Troubleshooting approach
+
+1. Check whether the container exists and is running with `docker ps -a`.
+2. Inspect logs with `docker logs` or `docker compose logs`.
+3. Inspect mounts, ports, environment, and runtime settings with `docker inspect`.
+4. Validate host paths and permissions for bind mounts.
+5. Check network and port conflicts.
+6. Change one thing at a time and verify the result.
+
+## Persistence reminder
+
+A container's writable layer should not be treated as durable storage. Use bind mounts or named volumes for data that must survive container replacement. Keep secrets and machine-specific runtime state out of Git.

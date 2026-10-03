@@ -2,43 +2,32 @@
 
 ## Overview
 
-Nginx was the first practical Docker Compose service created for the homelab.
-
-The project was intentionally simple so Docker Compose concepts could be learned before moving to more complicated services.
+Nginx was the first practical Docker Compose service built in the homelab. It was used to learn the basic Compose workflow before moving to more involved services.
 
 ## Configuration
 
-The Nginx container exposed:
+- Host port: `8080`
+- Container port: `80`
+- Host content directory: `~/homelab/compose/nginx/html/`
+- Container document root: `/usr/share/nginx/html`
 
-```text
-Host port: 8080
-Container port: 80
-```
+The HTML directory is bind-mounted into the container, allowing the page to be edited on the host and served by Nginx without rebuilding the image.
 
-A local HTML directory was bind-mounted into the Nginx document root:
+## Workflow
 
-```text
-~/homelab/compose/nginx/html/
-    -> /usr/share/nginx/html
-```
-
-## Compose workflow
-
-The project demonstrated:
-
-1. Creating a Compose project directory.
-2. Creating `compose.yaml`.
-3. Creating local web content.
-4. Starting the container with Docker Compose.
-5. Verifying the service through the browser.
-6. Stopping/removing the service when required.
-7. Committing the project to Git.
+1. Create a dedicated Compose project directory.
+2. Define the service in `compose.yaml`.
+3. Publish the host port and bind-mount the HTML directory.
+4. Start the service with Docker Compose.
+5. Verify the result at `http://localhost:8080`.
+6. Inspect logs and container status when troubleshooting.
+7. Track the configuration in Git.
 
 ## Skills demonstrated
 
-- Docker Compose
-- Port mapping
-- Bind mounts
-- Container lifecycle management
 - Basic web-server deployment
-- Git tracking of infrastructure configuration
+- Docker Compose
+- Port publishing
+- Bind mounts
+- Container lifecycle and logs
+- Git-based configuration tracking

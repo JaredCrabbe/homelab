@@ -2,23 +2,9 @@
 
 ## Overview
 
-Nginx Proxy Manager (NPM) was added to the homelab to provide a simple web interface for managing reverse-proxy hosts and routing traffic to services running on the homelab.
+Nginx Proxy Manager (NPM) provides a web interface for configuring reverse-proxy hosts and routing HTTP/HTTPS requests to services running in the homelab.
 
-It complements the Docker-based service architecture by providing a central place to manage HTTP/HTTPS access to internal services.
-
-## Purpose
-
-The project provides experience with:
-
-- Reverse proxying
-- HTTP/HTTPS routing
-- Docker networking
-- Web-based infrastructure administration
-- Managing access to self-hosted services
-
-## Homelab Role
-
-NPM sits between clients and internal web services:
+## Role in the homelab
 
 ```text
 Client
@@ -27,49 +13,21 @@ Client
 Nginx Proxy Manager
   |
   +--> Homepage
-  +--> Other web services
+  +--> Other configured web services
 ```
 
-Instead of exposing every service directly, NPM can receive the request and forward it to the appropriate internal container.
+A reverse proxy provides a central place to route requests instead of requiring every web service to be accessed directly by its own host port. It does not automatically make services public; exposure depends on the network, DNS, firewall, and proxy configuration.
 
-## Docker Deployment
+## Docker deployment
 
-NPM runs as a Docker container using Docker Compose.
+NPM is deployed through Docker Compose. Its commonly used ports are:
 
-The container exposes the standard NPM management and proxy ports:
+- `80` — HTTP proxy traffic
+- `81` — administration interface
+- `443` — HTTPS proxy traffic
 
-- `80` — HTTP
-- `81` — NPM administration interface
-- `443` — HTTPS
+The container is included in the custom Docker health monitor.
 
-The service is monitored by the homelab health monitor.
+## Skills demonstrated
 
-## Monitoring
-
-NPM was added to the monitor's watched container list:
-
-```text
-nginx-proxy-manager
-```
-
-Its Docker health status is tracked alongside Homepage, AdGuard Home, Plex, and Samba.
-
-The monitor can detect:
-
-- Healthy
-- Unhealthy
-- Stopped
-- Recovery after an incident
-
-## Skills Demonstrated
-
-- Docker Compose
-- Reverse-proxy concepts
-- HTTP/HTTPS
-- Service routing
-- Container health monitoring
-- Linux service administration
-
-## Lessons Learned
-
-NPM demonstrates how a self-hosted environment can centralise access to multiple web services instead of configuring each service independently.
+Docker Compose, reverse-proxy concepts, HTTP/HTTPS, internal service routing, web-based infrastructure administration, container monitoring, and Linux service troubleshooting.

@@ -2,170 +2,38 @@
 
 ## Overview
 
-The Homelab Monitor is a Python service created to monitor the Docker services running in the homelab and send notifications when services become unhealthy or stop.
-
-The monitor was developed incrementally and is now considered complete.
+The Docker health monitor is a custom Python service that watches selected homelab containers and sends ntfy notifications when their health or running state changes. It is separate from the network monitor documented in `12-Network-Monitor.md`.
 
 ## Monitored containers
 
-The monitor currently watches:
+The monitor watches the configured service containers, including Homepage, AdGuard Home, Plex, Nginx Proxy Manager, and Samba.
 
-```text
-Homepage
-adguard-home
-plex
-nginx-proxy-manager
-samba
-```
+## Detection and state
 
-## Monitoring method
+The monitor listens to Docker events such as health-status changes, container exits, and starts, and uses `docker inspect` to reconcile the actual current container state. It distinguishes healthy, unhealthy, starting, and stopped states.
 
-The monitor uses:
+Previous state is persisted in `state.json`. On startup, the monitor checks live Docker state instead of assuming that the saved state is still accurate. This startup reconciliation helps detect incidents or recoveries that happened while the monitor was offline. State writes use a temporary file and replacement to reduce the chance of a partially written state file.
 
-```text
-docker events
-```
-
-with container events for:
-
-- `health_status`
-- `die`
-- `start`
-
-It also uses `docker inspect` to determine the actual current state of a container.
-
-## States
-
-The monitor distinguishes between:
-
-```text
-health_status: healthy
-health_status: unhealthy
-health_status: starting
-container_status: stopped
-```
-
-## Persistent state
-
-Container state is stored in:
-
-```text
-state.json
-```
-
-The state contains information such as:
-
-```json
-{
-  "Homepage": {
-    "status": "health_status: healthy",
-    "unhealthy_since": null
-  }
-}
-```
-
-The monitor can migrate the original state-file format to the newer structure.
-
-State writes use a temporary file followed by replacement so that a partial write is less likely to corrupt the state file.
-
-## Startup reconciliation
-
-A major feature is startup reconciliation.
-
-When the monitor starts, it does not assume that the saved state is still correct.
-
-It checks each monitored container with Docker and compares the actual state with the saved state.
-
-This allows the monitor to detect situations such as:
-
-- A container being unhealthy while the monitor was offline.
-- A container being stopped while the monitor was offline.
-- A previously unhealthy container recovering before the monitor restarted.
-
-## Incident timing
-
-When a container becomes unhealthy or stops, the monitor records the incident time in:
-
-```text
-unhealthy_since
-```
-
-When the container recovers, the monitor calculates the downtime and includes it in the recovery notification.
+When an incident is detected, the monitor records when the unhealthy/stopped period began. On recovery, it can calculate downtime and include it in the notification.
 
 ## Notifications
 
-Notifications are sent to the homelab ntfy topic:
+Notifications are sent to the local ntfy topic:
 
 ```text
 http://192.168.10.151:8082/homelab
 ```
 
-Alerts include:
-
-- Container
-- Status
-- Host
-- Time
-
-Recovery notifications additionally include downtime when an incident time was recorded.
+Alerts include the affected container and status. Recovery notifications can include the host, recovery time, and downtime.
 
 ## systemd
 
-The monitor runs as:
+The service is managed by `homelab-monitor.service`, runs as `jared`, uses the project working directory under `/home/jared/homelab/compose/homelab-monitor`, and starts the Python monitor script. It is configured to restart after failure with a short delay.
 
-```text
-homelab-monitor.service
-```
+## Testing and lessons
 
-The service uses:
+The monitor has been exercised with healthy states, unhealthy containers, stopped/started containers, service restarts, state persistence, startup reconciliation, recovery notifications, downtime calculation, and the real Plex/NVIDIA issue.
 
-```text
-User=jared
-WorkingDirectory=/home/jared/homelab/compose/homelab-monitor
-Environment=PYTHONUNBUFFERED=1
-```
+## Skills demonstrated
 
-It starts the monitor with:
-
-```text
-/usr/bin/python3 /home/jared/homelab/compose/homelab-monitor/monitor.py
-```
-
-It is configured to restart after failure:
-
-```text
-Restart=on-failure
-RestartSec=5
-```
-
-## Testing
-
-The monitor was tested against:
-
-- Normal healthy states
-- Unhealthy containers
-- Container stops
-- Container starts
-- Service restarts
-- State persistence
-- Startup reconciliation
-- Recovery notifications
-- Downtime calculation
-- A real Plex/NVIDIA failure
-
-## Result
-
-The monitor is complete and committed to Git.
-
-It provides a practical example of combining:
-
-- Python
-- Docker
-- Docker events
-- Docker health checks
-- Linux
-- systemd
-- JSON persistence
-- HTTP notifications
-- Git
-- Troubleshooting
+Python, Docker events, health checks, `docker inspect`, JSON state persistence, systemd, HTTP notifications, incident timing, Git, and troubleshooting.

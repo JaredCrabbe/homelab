@@ -2,63 +2,30 @@
 
 ## Overview
 
-Samba was deployed to make the Linux NAS storage accessible to other devices over the network using SMB.
+Samba runs in Docker and makes the NAS share available to compatible devices, including Windows through File Explorer. The exported share is named `shares` and uses the host directory `/srv/nas/shares`.
 
-## Storage
+## Deployment
 
-The Samba service uses the NAS storage mounted at:
+Samba has a dedicated Compose project under `~/homelab/compose/samba/`. The configuration file `smb.conf` is bind-mounted into the container. The container logs confirmed Samba started successfully.
 
-```text
-/srv/nas
-```
+SMB is exposed on TCP port `445`. SMB1 is disabled; the minimum protocol is SMB2 or newer.
 
-The Samba container exposes SMB on the standard modern SMB port:
+## Permissions and access
 
-```text
-445
-```
+The NAS uses a `nas` group for shared access. The share directory is configured with group-based permissions and setgid inheritance. Test content was created to verify file and directory permissions, including a test file owned by `jared:nas` with mode `660` and a directory using mode `2770`.
 
-## Docker deployment
+Samba's user/share configuration and Linux filesystem permissions both affect whether a client can read or write a file; both layers must be checked during troubleshooting.
 
-Samba was deployed as a Docker container with a dedicated Compose project.
+## Troubleshooting lesson
 
-The Samba configuration was mounted into the container using a bind mount.
-
-An early configuration issue occurred because the bind mount path was missing the required `./` prefix. The resulting error indicated that `/etc/samba/smb.conf` did not map to an existing file.
-
-The path was corrected and Samba subsequently started successfully.
-
-## Configuration concepts
-
-The Samba configuration used:
-
-- User-based security
-- SMB2 or newer as the minimum protocol
-- Shared storage
-- Forced user/group settings
-- `catia`
-- `fruit`
-- `streams_xattr`
-
-## Permissions
-
-The Linux NAS permissions were configured alongside Samba permissions.
-
-A test file was created under the shared storage and ownership/permissions were checked to confirm that the Samba configuration and Linux filesystem permissions worked together.
-
-## Windows access
-
-The project included testing access from Windows File Explorer and discussing ways to access the share without repeatedly typing the server IP.
+An early startup problem came from a missing `./` prefix in a relative bind-mount path for `smb.conf`. Correcting the host path allowed the configuration to mount correctly and Samba to start.
 
 ## Skills demonstrated
 
-- SMB
-- Samba
-- Dockerised Samba
+- SMB and Samba configuration
+- Docker Compose and bind mounts
 - `smb.conf`
-- Network shares
-- Port 445
-- Linux filesystem permissions
+- Modern SMB protocol settings
+- Linux ownership, groups, and permissions
 - Windows-to-Linux file sharing
-- Docker bind mounts
-- Troubleshooting container configuration
+- Container log inspection and configuration troubleshooting

@@ -2,72 +2,29 @@
 
 ## Overview
 
-AdGuard Home was deployed as the homelab's network-level DNS and ad-blocking service.
+AdGuard Home is the homelab's self-hosted DNS filtering service. It can process DNS requests from devices configured to use it, apply filtering rules, and forward allowed requests to upstream DNS resolvers.
 
-It provides a local DNS service that can process DNS requests from devices on the network and apply filtering rules before forwarding permitted requests upstream.
-
-## Purpose
-
-The project provides practical experience with:
-
-- DNS
-- Network services
-- Docker
-- Port management
-- Network troubleshooting
-- Self-hosted infrastructure
-
-## Homelab Role
-
-The basic flow is:
+## Basic request flow
 
 ```text
-Client Device
+Client device
      |
      v
 AdGuard Home
      |
-     +--> Blocked request
+     +--> Filtered/blocked request
      |
-     +--> Allowed request
-              |
-              v
-         Upstream DNS
+     +--> Allowed request --> Upstream DNS
 ```
 
-This allows DNS filtering to be handled centrally rather than requiring software to be installed on every device.
+## Docker deployment
 
-## Docker Deployment
-
-AdGuard Home runs as a Docker container.
-
-Important ports in the deployment include:
-
-- `53/tcp` — DNS
-- `53/udp` — DNS
-- `8088` — web interface exposed by the homelab configuration
-
-The container also exposes the other ports required by AdGuard Home internally.
+AdGuard Home runs as a Docker container managed with Compose. The homelab configuration includes DNS on TCP/UDP port `53` and a web interface exposed on host port `8088`. Check the current Compose file for the authoritative port mappings before making changes.
 
 ## Monitoring
 
-AdGuard Home is included in the homelab Docker health monitor:
+The `adguard-home` container is included in the Docker health monitor. Its state is persisted and reconciled against the live Docker state when the monitor starts.
 
-```text
-adguard-home
-```
+## Skills demonstrated
 
-Its health status is persisted in the monitor's `state.json` file and is checked during startup reconciliation.
-
-## Skills Demonstrated
-
-- DNS fundamentals
-- Docker Compose
-- Network port configuration
-- Linux administration
-- Troubleshooting network services
-- Monitoring infrastructure
-
-## Lessons Learned
-
-AdGuard Home adds an important networking component to the homelab. It moves the project beyond simply running containers and into managing actual network infrastructure and DNS services.
+DNS fundamentals, Docker Compose, port configuration, network-service troubleshooting, container health monitoring, and self-hosted infrastructure administration.
