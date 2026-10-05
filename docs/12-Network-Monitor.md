@@ -41,12 +41,12 @@ The first run establishes a baseline rather than reporting every initial state a
 
 ## systemd automation
 
-The periodic execution uses:
+The planned periodic execution uses:
 
 - `homelab-network-monitor.service` — `Type=oneshot`, runs the Python script as `jared`
 - `homelab-network-monitor.timer` — starts after boot and repeats at a one-minute interval
 
-The service and timer should be considered fully operational only after enabling the timer and verifying its next run and journal output.
+The service and timer should be considered fully operational only after enabling the timer and verifying its next run and journal output. Useful checks:
 
 ```bash
 systemctl status homelab-network-monitor.timer

@@ -5,3 +5,4 @@ __pycache__/
 secrets/
 *.log
 state.json
+security-baseline.md

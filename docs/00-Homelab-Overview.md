@@ -29,7 +29,8 @@ This homelab is a practical Linux and infrastructure learning environment built 
 10. AdGuard Home for local DNS filtering
 11. Homepage dashboard for service access
 12. Automated NAS backups with systemd scheduling, retention, SHA-256 checksums, verification, and failure notifications
-13. Network monitor written in Python for interface state, gateway/internet reachability, latency, packet loss, and state-change alerts
+12. Network monitor written in Python for interface state, gateway/internet reachability, latency, packet loss, and state-change alerts
+13. Tailscale remote access for secure access to the homelab from outside the local network
 
 ## Current service and automation capabilities
 
@@ -40,6 +41,7 @@ This homelab is a practical Linux and infrastructure learning environment built 
 - **Notifications:** ntfy alerts for Docker/network state changes and backup failures
 - **Backups:** daily scheduled snapshots, seven-backup retention, checksums, checksum verification, incomplete-backup cleanup, and a successful restore/verification test
 - **Automation:** Python scripts and systemd services/timers
+- **Remote access:** Tailscale for secure remote access to the homelab without relying on direct public exposure of internal services
 - **Version control:** Git commits, GitHub SSH authentication, and documentation tracked alongside configuration
 
 ## Monitoring and scheduled jobs
@@ -76,4 +78,4 @@ The exact set of Compose directories can evolve as services are added or reorgan
 
 ## Current next steps
 
-Automated backups are no longer a planned project; they are implemented and tested. The current focus is to finish verifying the network monitor's systemd timer, then update/maintain documentation as the environment grows. Future ideas can include improving observability, documenting recovery procedures, and adding security-focused projects, but these are not represented as completed work.
+Automated backups are no longer a planned project; they are implemented and tested. The current focus is to finish verifying the network monitor's systemd timer and maintain the homelab documentation as the environment grows. Future ideas can include improving observability, documenting recovery procedures, and adding security-focused projects, but these are not represented as completed work.
