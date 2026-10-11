@@ -1,6 +1,6 @@
 # Homelab
 
-My personal Linux-based homelab used to build practical experience with Linux administration, Docker, networking, storage, self-hosted services, automation, monitoring, and backup/recovery.
+My personal Linux-based homelab used to build practical experience with Linux administration, Docker, networking, storage, self-hosted services, automation, monitoring, backup/recovery, remote access, and security hardening.
 
 The homelab is both a learning environment and a practical portfolio of infrastructure projects.
 
@@ -31,6 +31,7 @@ Most services run as Docker containers managed with Docker Compose, while host-l
 | Plex                | Self-hosted media server                    |
 | Samba               | SMB network file sharing                    |
 | ntfy                | Notification delivery                       |
+| Tailscale           | Private remote access and Tailscale SSH     |
 | Homelab Monitor     | Docker health and state monitoring          |
 | Homelab Backup      | Automated backup and integrity verification |
 | Network Monitor     | Network connectivity and state monitoring   |
@@ -39,21 +40,23 @@ Most services run as Docker containers managed with Docker Compose, while host-l
 
 ## Projects
 
-| #  | Project                                                       | What I Learned                                                                             |
-| -- | ------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
-| 00 | [Homelab Overview](docs/00-Homelab-Overview.md)               | Infrastructure planning and architecture                                                   |
-| 01 | [Fedora Linux Foundation](docs/01-Fedora-Linux-Foundation.md) | Linux administration and system configuration                                              |
-| 02 | [Docker & Compose](docs/02-Docker-and-Compose.md)             | Containers, images, volumes, networking and Compose                                        |
-| 03 | [Nginx Container](docs/03-Nginx-Container.md)                 | Docker deployment, ports and bind mounts                                                   |
-| 04 | [NAS Storage](docs/04-NAS-Storage.md)                         | Filesystems, mounting, permissions and storage                                             |
-| 05 | [Samba / SMB](docs/05-Samba-SMB.md)                           | Network file sharing and Windows/Linux interoperability                                    |
-| 06 | [Plex Media Server](docs/06-Plex-Media-Server.md)             | Media hosting, Docker and GPU configuration                                                |
-| 07 | [Homelab Monitor](docs/07-Homelab-Monitor.md)                 | Python, Docker events, state tracking, systemd and notifications                           |
-| 08 | [Automated Backups](docs/08-Automated-backups.md)             | Python automation, systemd timers, SHA-256 verification and recovery                       |
-| 09 | [Nginx Proxy Manager](docs/09-nginx-proxy-manager.md)         | Reverse proxies and internal service routing                                               |
-| 10 | [AdGuard Home](docs/10-adguard-home.md)                       | DNS and network filtering                                                                  |
-| 11 | [Homepage](docs/11-homepage.md)                               | Service dashboards and Docker integration                                                  |
-| 12 | [Network Monitoring](docs/12-Network-Monitor.md)              | Network interfaces, ICMP, packet loss, latency, state detection, systemd and notifications |
+| #  | Project                                                         | What I Learned                                                                             |
+| -- | --------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| 00 | [Homelab Overview](docs/00-Homelab-Overview.md)                 | Infrastructure planning and architecture                                                   |
+| 01 | [Fedora Linux Foundation](docs/01-Fedora-Linux-Foundation.md)   | Linux administration and system configuration                                              |
+| 02 | [Docker & Compose](docs/02-Docker-and-Compose.md)               | Containers, images, volumes, networking and Compose                                        |
+| 03 | [Nginx Container](docs/03-Nginx-Container.md)                   | Docker deployment, ports and bind mounts                                                   |
+| 04 | [NAS Storage](docs/04-NAS-Storage.md)                           | Filesystems, mounting, permissions and storage                                             |
+| 05 | [Samba / SMB](docs/05-Samba-SMB.md)                             | Network file sharing and Windows/Linux interoperability                                    |
+| 06 | [Plex Media Server](docs/06-Plex-Media-Server.md)               | Media hosting, Docker and GPU configuration                                                |
+| 07 | [Homelab Monitor](docs/07-Homelab-Monitor.md)                   | Python, Docker events, state tracking, systemd and notifications                           |
+| 08 | [Automated Backups](docs/08-Automated-backups.md)               | Python automation, systemd timers, SHA-256 verification and recovery                       |
+| 09 | [Nginx Proxy Manager](docs/09-nginx-proxy-manager.md)           | Reverse proxies, internal service routing and administrative interface isolation           |
+| 10 | [AdGuard Home](docs/10-adguard-home.md)                         | DNS and network filtering                                                                  |
+| 11 | [Homepage](docs/11-homepage.md)                                 | Service dashboards and Docker integration                                                  |
+| 12 | [Network Monitoring](docs/12-Network-Monitor.md)                | Network interfaces, ICMP, packet loss, latency, state detection, systemd and notifications |
+| 13 | [Tailscale Remote Access](docs/13-Tailscale-Remote-Access.md)   | Private remote access, Tailscale SSH, overlay networking and access policies               |
+| 14 | [Security Hardening](docs/14-Security-Hardening.md)             | Attack surface reduction, least privilege, firewall hardening and post-change validation   |
 
 ---
 
@@ -86,7 +89,9 @@ homelab/
 │   ├── 09-nginx-proxy-manager.md
 │   ├── 10-adguard-home.md
 │   ├── 11-homepage.md
-│   └── 12-Network-Monitor.md
+│   ├── 12-Network-Monitor.md
+│   ├── 13-Tailscale-Remote-Access.md
+│   └── 14-Security-Hardening.md
 │
 └── scripts/
     ├── homelab-backup/
@@ -123,6 +128,7 @@ homelab/
 * Volumes and bind mounts
 * Health checks
 * Docker events
+* Port publication and loopback binding
 
 ### Networking
 
@@ -131,12 +137,24 @@ homelab/
 * HTTP/HTTPS
 * Reverse proxies
 * Local network services
+* Tailscale and private remote access
 * Network interface monitoring
 * ICMP/ping
 * Packet-loss detection
 * Latency monitoring
 * Gateway and internet connectivity testing
 * Network state-change detection
+
+### Security
+
+* Attack surface reduction
+* Administrative interface isolation
+* Least-privilege remote access (Tailscale tags and access policies)
+* SSH access control
+* Firewall hardening
+* Defence in depth
+* Post-change validation
+* Documenting accepted exceptions and deferred work
 
 ### Automation & Monitoring
 
@@ -187,9 +205,14 @@ homelab/
 * [x] Network state-change notifications
 * [x] Automated network monitoring with systemd
 * [x] Network monitor journal logging
+* [x] Tailscale remote access
+* [x] Administrative interface isolation (Nginx Proxy Manager and AdGuard Home)
+* [x] Least-privilege Tailscale access and non-root Tailscale SSH
+* [x] Firewall hardening and post-change validation
 
 ### Next
 
+* [ ] Complete the deferred security reviews listed in the [hardening document](docs/14-Security-Hardening.md)
 * [ ] Expand monitoring as new services are added
 * [ ] Continue improving infrastructure documentation
 * [ ] Build additional homelab services and automation
