@@ -40,3 +40,6 @@ The backup system uses a systemd mount dependency so it does not intentionally r
 ## Skills demonstrated
 
 Disk identification, filesystem preparation, ext4, persistent mounts, Linux ownership and groups, setgid permissions, storage organisation, and integrating storage with containerised services and scheduled backups.
+
+
+Related: [Samba SMB](05-Samba-SMB.md), [Plex Media Server](06-Plex-Media-Server.md), [Automated Backups](08-Automated-backups.md), [Fedora Linux Foundation](01-Fedora-Linux-Foundation.md)

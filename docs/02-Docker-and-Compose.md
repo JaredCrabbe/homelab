@@ -49,3 +49,6 @@ Bind mounts are used where direct host-file management is useful, such as Nginx'
 ## Result
 
 Docker provides a repeatable way to deploy and manage the homelab's web, media, DNS, file-sharing, dashboard, and monitoring services.
+
+
+Related: [Homelab Overview](00-Homelab-Overview.md), [Docker notes](docker-notes.md), [Nginx Container](03-Nginx-Container.md), [Homelab Monitor](07-Homelab-Monitor.md)

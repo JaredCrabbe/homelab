@@ -6,3 +6,7 @@ secrets/
 *.log
 state.json
 security-baseline.md
+security-baseline-superseded-2026-10-05.md
+.obsidian
+.trash
+

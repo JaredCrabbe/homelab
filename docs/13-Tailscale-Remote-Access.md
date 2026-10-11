@@ -57,6 +57,20 @@ The following practices remain important:
 - Keep remote access limited to services that actually need it.
 - Continue monitoring the host and network for connectivity or service failures.
 
+## Access policy and Tailscale SSH
+
+Remote administration is performed through Tailscale SSH rather than through LAN SSH, which was removed from the firewall path. The homelab host is tagged `tag:homelab`, and the earlier unrestricted access policy was replaced with a least-privilege one.
+
+| Port | Purpose |
+|---|---|
+| 22 | SSH |
+| 445 | Samba |
+| 8082 | ntfy |
+
+Remote access is not required for the Nginx Proxy Manager admin interface (`81`) or the AdGuard Home admin interface (`8088`), so neither is available remotely.
+
+The SSH policy allows Tailscale members to connect to the tagged homelab machine as non-root users only; root access is not allowed. Tailscale connectivity and SSH were tested successfully after the change. A Tailscale SELinux warning remains and has not been resolved. See [Security Hardening](14-Security-Hardening.md) for the full change record.
+
 ## Skills Demonstrated
 
 This project demonstrates practical experience with:
@@ -67,9 +81,12 @@ This project demonstrates practical experience with:
 - Linux networking
 - Remote system administration
 - Network security considerations
+- Least-privilege access control
 - Service exposure and access control
 - Troubleshooting remote connectivity
 
 ## Project Status
 
-**Completed and tested.** Tailscale is installed on the homelab host and remote access has been enabled and verified from an authorised device.
+**Completed and tested.** Tailscale is installed on the homelab host and remote access has been enabled and verified from an authorised device. Access is restricted to the services listed above.
+
+Related: [Nginx Proxy Manager](09-nginx-proxy-manager.md), [AdGuard Home](10-adguard-home.md), [Network Monitor](12-Network-Monitor.md), [Fedora Linux Foundation](01-Fedora-Linux-Foundation.md), [Security Hardening](14-Security-Hardening.md)

@@ -29,3 +29,8 @@ An early startup problem came from a missing `./` prefix in a relative bind-moun
 - Linux ownership, groups, and permissions
 - Windows-to-Linux file sharing
 - Container log inspection and configuration troubleshooting
+
+
+Related: [NAS Storage](04-NAS-Storage.md), [Docker and Compose](02-Docker-and-Compose.md), [Homelab Monitor](07-Homelab-Monitor.md)
+
+Security: SMB on `445` remains reachable from the LAN and over Tailscale, and was re-tested after the firewall hardening. See [Security Hardening](14-Security-Hardening.md).

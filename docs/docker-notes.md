@@ -50,3 +50,6 @@ Run Compose commands from the relevant project directory or use `-f` to specify 
 ## Persistence reminder
 
 A container's writable layer should not be treated as durable storage. Use bind mounts or named volumes for data that must survive container replacement. Keep secrets and machine-specific runtime state out of Git.
+
+
+Related: [Docker and Compose](02-Docker-and-Compose.md), [Homelab Monitor](07-Homelab-Monitor.md), [Nginx Container](03-Nginx-Container.md)

@@ -32,3 +32,6 @@ systemd is used for long-running monitoring and scheduled automation. Examples i
 ## Design principle
 
 The homelab is being built on the existing Fedora installation rather than repeatedly reinstalling the operating system. Projects are kept in version-controlled directories and documented as the configuration develops.
+
+
+Related: [Homelab Overview](00-Homelab-Overview.md), [Docker and Compose](02-Docker-and-Compose.md), [NAS Storage](04-NAS-Storage.md), [Tailscale Remote Access](13-Tailscale-Remote-Access.md)

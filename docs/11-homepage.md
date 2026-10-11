@@ -17,3 +17,6 @@ The monitor uses Homepage to exercise baseline detection, state persistence, sta
 ## Skills demonstrated
 
 Docker Compose, dashboard configuration, service organisation, health checks, Python monitoring integration, JSON state persistence, and ntfy notifications.
+
+
+Related: [Nginx Proxy Manager](09-nginx-proxy-manager.md), [AdGuard Home](10-adguard-home.md), [Homelab Monitor](07-Homelab-Monitor.md)

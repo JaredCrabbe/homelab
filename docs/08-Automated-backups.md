@@ -57,3 +57,13 @@ Check that `/srv/nas` is mounted before relying on a backup, and periodically pe
 ## Skills demonstrated
 
 Python automation, file handling, checksums, retention logic, error handling, systemd services and timers, mount dependencies, ntfy failure alerts, restore verification, and operational documentation.
+
+
+## Open checks
+
+- Confirm the backup set includes data held in Docker named volumes (Plex metadata, AdGuard Home and Nginx Proxy Manager configuration), not only files under `~/homelab`. List the included paths and exclusions in this note.
+- Backups are stored on the same NAS disk as the data they protect, and there is no offsite or second copy. Consider a second destination.
+- There is no disk-health (SMART) monitoring for the NAS drive yet; a failing disk would take the data and the backups with it.
+- Failure alerts depend on ntfy at the host's LAN address, so a host or network outage will not produce an alert. See [Homelab Monitor](07-Homelab-Monitor.md).
+
+Related: [NAS Storage](04-NAS-Storage.md), [Homelab Monitor](07-Homelab-Monitor.md), [Network Monitor](12-Network-Monitor.md)

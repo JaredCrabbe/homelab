@@ -31,3 +31,6 @@ The HTML directory is bind-mounted into the container, allowing the page to be e
 - Bind mounts
 - Container lifecycle and logs
 - Git-based configuration tracking
+
+
+Related: [Docker and Compose](02-Docker-and-Compose.md), [Docker notes](docker-notes.md), [Nginx Proxy Manager](09-nginx-proxy-manager.md)
