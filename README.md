@@ -74,24 +74,29 @@ homelab/
 │   ├── nginx-proxy-manager/
 │   ├── ntfy/
 │   ├── plex/
+│   ├── prometheus/
 │   └── samba/
 │
 ├── docs/
 │   ├── 00-Homelab-Overview.md
 │   ├── 01-Fedora-Linux-Foundation.md
 │   ├── 02-Docker-and-Compose.md
-│   ├── 03-Nginx-Container.md
-│   ├── 04-NAS-Storage.md
-│   ├── 05-Samba-SMB.md
-│   ├── 06-Plex-Media-Server.md
-│   ├── 07-Homelab-Monitor.md
-│   ├── 08-Automated-backups.md
-│   ├── 09-nginx-proxy-manager.md
-│   ├── 10-adguard-home.md
-│   ├── 11-homepage.md
-│   ├── 12-Network-Monitor.md
-│   ├── 13-Tailscale-Remote-Access.md
-│   └── 14-Security-Hardening.md
+│   ├── 03-NAS-Storage.md
+│   ├── 04-Samba-SMB.md
+│   ├── 05-Plex-Media-Server.md
+│   ├── 06-Homelab-Monitor.md
+│   ├── 07-Automated-backups.md
+│   ├── 08-nginx-proxy-manager.md
+│   ├── 09-adguard-home.md
+│   ├── 10-homepage.md
+│   ├── 11-Network-Monitor.md
+│   ├── 12-Tailscale-Remote-Access.md
+│   ├── 13-Security-Hardening.md
+│   ├── 14-Prometheus-and-Grafana.md
+│   ├── docker-notes.md
+│   ├── notes.md
+│   └── Ways to Scan a Network.md
+|   
 │
 └── scripts/
     ├── homelab-backup/
