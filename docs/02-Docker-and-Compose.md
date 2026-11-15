@@ -18,7 +18,8 @@ homelab/
 │   ├── adguard-home/
 │   ├── homepage/
 │   ├── homelab-monitor/
-│   └── ntfy/
+|   ├── ntfy/
+|   └── prometheus/
 ├── scripts/
 │   ├── homelab-backup/
 │   └── network-monitor/

@@ -27,6 +27,7 @@ docker compose up -d
 docker compose ps
 docker compose logs -f
 docker compose down
+docker compose config -q
 ```
 
 Run Compose commands from the relevant project directory or use `-f` to specify a Compose file.
@@ -37,6 +38,7 @@ Run Compose commands from the relevant project directory or use `-f` to specify 
 - Plex uses a named volume for persistent application data and NAS-backed media storage.
 - Samba uses a bind-mounted `smb.conf` and the NAS share directory.
 - Homepage, AdGuard Home, Plex, Nginx Proxy Manager, and Samba are watched by the custom Docker health monitor.
+- Prometheus bind-mounts `prometheus.yml` read-only and keeps its data in a named volume; Grafana keeps its data in a named volume and is provisioned from a bind-mounted data source file.
 
 ## Troubleshooting approach
 
@@ -51,5 +53,6 @@ Run Compose commands from the relevant project directory or use `-f` to specify 
 
 A container's writable layer should not be treated as durable storage. Use bind mounts or named volumes for data that must survive container replacement. Keep secrets and machine-specific runtime state out of Git.
 
+If the host path of a file bind mount does not exist when a container starts, Docker creates it as an empty directory, and the mount then fails with a "not a directory" error. Create config files before running `docker compose up -d`, and validate the Compose file with `docker compose config -q`.
 
 Related: [Docker and Compose](02-Docker-and-Compose.md), [Homelab Monitor](07-Homelab-Monitor.md), [Nginx Container](03-Nginx-Container.md)

@@ -17,7 +17,7 @@
         description: DNS Homepage
         widget:
           type: adguard
-          url: http://192.168.10.151:8088
+          url: http://adguard.home.arpa
           username: "{{HOMEPAGE_VAR_SERVICE_USER}}"
           password: "{{HOMEPAGE_VAR_SERVICE_PASS}}"
     - NPM:

@@ -65,3 +65,5 @@ Related: [Homelab Overview](00-Homelab-Overview.md), [Docker notes](docker-notes
 - Network monitor timer confirmed running (2026-10-07)
 
 - Security hardening phase completed and validated (2026-10-08); see [Security Hardening](14-Security-Hardening.md)
+
+- Prometheus, node_exporter, and Grafana deployed and verified (2026-10-19); see [Prometheus and Grafana](15-Prometheus-and-Grafana.md)

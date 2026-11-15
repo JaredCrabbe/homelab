@@ -40,6 +40,6 @@ The monitor has been exercised with healthy states, unhealthy containers, stoppe
 
 Python, Docker events, health checks, `docker inspect`, JSON state persistence, systemd, HTTP notifications, incident timing, Git, and troubleshooting.
 
-Related: [Network Monitor](12-Network-Monitor.md), [Docker and Compose](02-Docker-and-Compose.md), [Docker notes](docker-notes.md), [Homepage](11-homepage.md), [Automated Backups](08-Automated-backups.md)
+Related: [Network Monitor](12-Network-Monitor.md), [Docker and Compose](02-Docker-and-Compose.md), [Docker notes](docker-notes.md), [Homepage](11-homepage.md), [Automated Backups](08-Automated-backups.md) , [Prometheus and Grafana](15-Prometheus-and-Grafana.md)
 
 Security: ntfy was reviewed during the hardening work and no authentication was added, because LAN access is intentional and remote access is restricted through Tailscale. Adding authentication would require changes to this monitor's script. See [Security Hardening](14-Security-Hardening.md).

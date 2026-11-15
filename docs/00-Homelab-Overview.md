@@ -36,21 +36,24 @@ This homelab is a practical Linux and infrastructure learning environment built 
 ## Current service and automation capabilities
 
 - **Linux administration:** packages, users/groups, filesystem permissions, disks, logs, and systemd
-- **Containerised services:** Nginx, Samba, Plex, Nginx Proxy Manager, AdGuard Home, Homepage, Docker monitor, and ntfy
+- **Containerised services:** Nginx, Samba, Plex, Nginx Proxy Manager, AdGuard Home, Homepage, Docker monitor, ntfy, Prometheus, node_exporter, and Grafana
 - **Storage:** NAS directory structure under `/srv/nas/{media,documents,backups,shares}`
-- **Monitoring:** Docker health/state monitoring and network connectivity monitoring
+- **Monitoring:** Docker health/state monitoring, network connectivity monitoring, and Prometheus/Grafana host metrics
 - **Notifications:** ntfy alerts for Docker/network state changes and backup failures
 - **Backups:** daily scheduled snapshots, seven-backup retention, checksums, checksum verification, incomplete-backup cleanup, and a successful restore/verification test
 - **Automation:** Python scripts and systemd services/timers
 - **Remote access:** Tailscale for secure remote access to the homelab without relying on direct public exposure of internal services
 - **Security hardening:** admin interfaces bound to localhost, least-privilege Tailscale access and SSH, and a reduced firewall port set, validated after each change
 - **Version control:** Git commits, GitHub SSH authentication, and documentation tracked alongside configuration
+- **Metrics and dashboards:** Prometheus (30-day retention) scraping node_exporter, with Grafana dashboards; Prometheus and Grafana are bound to localhost
 
 ## Monitoring and scheduled jobs
 
 The Docker monitor runs as `homelab-monitor.service` and restarts after failure. The backup job runs daily at 13:00 using `homelab-backup.timer`. The network monitor is a short `oneshot` check run by `homelab-network-monitor.timer` every minute after its initial boot delay; the timer is enabled and running.
 
 Network monitoring checks interface `enp3s0`, gateway `192.168.10.1`, and internet target `1.1.1.1`. It tracks `up`, `degraded`, and `down` states and sends ntfy notifications only when the saved state changes.
+
+
 
 ## Repository layout
 
@@ -73,6 +76,9 @@ homelab/
 ```
 
 The exact set of Compose directories can evolve as services are added or reorganised. Secrets and runtime state such as `.env` and `state.json` should not be committed when they contain private or machine-specific data.
+
+
+Prometheus scrapes itself and node_exporter every 15 seconds and keeps 30 days of data in a named volume. Grafana reads from Prometheus and shows the Node Exporter Full dashboard. Both are reachable from the host only (`127.0.0.1:9090` and `127.0.0.1:3000`). See [15 Prometheus and Grafana](15-Prometheus-and-Grafana.md).
 
 ## Backup project status
 
@@ -105,3 +111,4 @@ Automated backups, the network monitor (including its systemd timer), and the fi
 - [Docker notes](docker-notes.md): concepts, commands, troubleshooting approach
 - [Working notes](notes.md): status list and short lessons
 - [Ways to Scan a Network](Ways%20to%20Scan%20a%20Network.md): scanning methods and nmap recipes
+- Prometheus, node_exporter, and Grafana for host metrics collection, 30-day history, and dashboards
