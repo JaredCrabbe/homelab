@@ -35,6 +35,9 @@ Most services run as Docker containers managed with Docker Compose, while host-l
 | Homelab Monitor     | Docker health and state monitoring          |
 | Homelab Backup      | Automated backup and integrity verification |
 | Network Monitor     | Network connectivity and state monitoring   |
+| Tailscale           | remote access and access policy             |
+| Prometheus & grafana| host metrics, dashboards                    |
+
 
 ---
 
