@@ -45,18 +45,18 @@ Most services run as Docker containers managed with Docker Compose, while host-l
 | 00 | [Homelab Overview](docs/00-Homelab-Overview.md)                 | Infrastructure planning and architecture                                                   |
 | 01 | [Fedora Linux Foundation](docs/01-Fedora-Linux-Foundation.md)   | Linux administration and system configuration                                              |
 | 02 | [Docker & Compose](docs/02-Docker-and-Compose.md)               | Containers, images, volumes, networking and Compose                                        |
-| 03 | [Nginx Container](docs/03-Nginx-Container.md)                   | Docker deployment, ports and bind mounts                                                   |
-| 04 | [NAS Storage](docs/04-NAS-Storage.md)                           | Filesystems, mounting, permissions and storage                                             |
-| 05 | [Samba / SMB](docs/05-Samba-SMB.md)                             | Network file sharing and Windows/Linux interoperability                                    |
-| 06 | [Plex Media Server](docs/06-Plex-Media-Server.md)               | Media hosting, Docker and GPU configuration                                                |
-| 07 | [Homelab Monitor](docs/07-Homelab-Monitor.md)                   | Python, Docker events, state tracking, systemd and notifications                           |
-| 08 | [Automated Backups](docs/08-Automated-backups.md)               | Python automation, systemd timers, SHA-256 verification and recovery                       |
-| 09 | [Nginx Proxy Manager](docs/09-nginx-proxy-manager.md)           | Reverse proxies, internal service routing and administrative interface isolation           |
-| 10 | [AdGuard Home](docs/10-adguard-home.md)                         | DNS and network filtering                                                                  |
-| 11 | [Homepage](docs/11-homepage.md)                                 | Service dashboards and Docker integration                                                  |
-| 12 | [Network Monitoring](docs/12-Network-Monitor.md)                | Network interfaces, ICMP, packet loss, latency, state detection, systemd and notifications |
-| 13 | [Tailscale Remote Access](docs/13-Tailscale-Remote-Access.md)   | Private remote access, Tailscale SSH, overlay networking and access policies               |
-| 14 | [Security Hardening](docs/14-Security-Hardening.md)             | Attack surface reduction, least privilege, firewall hardening and post-change validation   |
+| 03 | [NAS Storage](docs/03-NAS-Storage.md)                           | Filesystems, mounting, permissions and storage                                             |
+| 04 | [Samba / SMB](docs/04-Samba-SMB.md)                             | Network file sharing and Windows/Linux interoperability                                    |
+| 05 | [Plex Media Server](docs/05-Plex-Media-Server.md)               | Media hosting, Docker and GPU configuration                                                |
+| 06 | [Homelab Monitor](docs/06-Homelab-Monitor.md)                   | Python, Docker events, state tracking, systemd and notifications                           |
+| 07 | [Automated Backups](docs/07-Automated-backups.md)               | Python automation, systemd timers, SHA-256 verification and recovery                       |
+| 08 | [Nginx Proxy Manager](docs/08-nginx-proxy-manager.md)           | Reverse proxies, internal service routing and administrative interface isolation           |
+| 09 | [AdGuard Home](docs/09-adguard-home.md)                         | DNS and network filtering                                                                  |
+| 10 | [Homepage](docs/10-homepage.md)                                 | Service dashboards and Docker integration                                                  |
+| 11 | [Network Monitoring](docs/11-Network-Monitor.md)                | Network interfaces, ICMP, packet loss, latency, state detection, systemd and notifications |
+| 12 | [Tailscale Remote Access](docs/12-Tailscale-Remote-Access.md)   | Private remote access, Tailscale SSH, overlay networking and access policies               |
+| 13 | [Security Hardening](docs/13-Security-Hardening.md)             | Attack surface reduction, least privilege, firewall hardening and post-change validation   |
+| 14 | [Prometheus & Grafana](docs/14-Prometheus-and-Grafana.md)       | Metrics collection, time-series storage, dashboards and localhost-only exposure            |
 
 ---
 
