@@ -55,4 +55,4 @@ A container's writable layer should not be treated as durable storage. Use bind 
 
 If the host path of a file bind mount does not exist when a container starts, Docker creates it as an empty directory, and the mount then fails with a "not a directory" error. Create config files before running `docker compose up -d`, and validate the Compose file with `docker compose config -q`.
 
-Related: [Docker and Compose](02-Docker-and-Compose.md), [Homelab Monitor](07-Homelab-Monitor.md), [Nginx Container](03-Nginx-Container.md)
+Related: [Docker and Compose](02-Docker-and-Compose.md), [Homelab Monitor](06-Homelab-Monitor.md), [Nginx Container](03-Nginx-Container.md)

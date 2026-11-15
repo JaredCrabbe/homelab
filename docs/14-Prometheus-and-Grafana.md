@@ -4,7 +4,7 @@
 
 Prometheus and Grafana add metrics collection, history, and dashboards to the homelab. Prometheus scrapes numeric metrics and stores them as time series; Grafana queries Prometheus and displays the results. node_exporter supplies the host metrics.
 
-This complements the custom monitors rather than replacing them. The [Docker health monitor](07-Homelab-Monitor.md) and the [Network Monitor](12-Network-Monitor.md) send ntfy alerts when a state changes, while Prometheus and Grafana show how CPU, memory, disk, and network usage change over time.
+This complements the custom monitors rather than replacing them. The [Docker health monitor](06-Homelab-Monitor.md) and the [Network Monitor](11-Network-Monitor.md) send ntfy alerts when a state changes, while Prometheus and Grafana show how CPU, memory, disk, and network usage change over time.
 
 ## Components
 
@@ -71,7 +71,7 @@ Ports `9090` and `3000` are not part of the Tailscale access policy, which allow
 - Grafana's admin password lives in `.env`, which is excluded from Git. `git status` was checked to confirm it is untracked.
 - Prometheus has no authentication of its own. Loopback binding is the control that applies.
 
-See [Security Hardening](14-Security-Hardening.md) for the exposure model these services were added under.
+See [Security Hardening](13-Security-Hardening.md) for the exposure model these services were added under.
 
 ## Verification
 
@@ -129,6 +129,6 @@ Prometheus configuration and scrape jobs, node_exporter, Grafana provisioning an
 
 **Prometheus, node_exporter, and Grafana deployed and verified (2026-10-19).** Host metrics are collected and graphed. Container metrics and alerting are not yet implemented.
 
-Related: [Docker and Compose](02-Docker-and-Compose.md), [Homelab Monitor](07-Homelab-Monitor.md), [Network Monitor](12-Network-Monitor.md), [Security Hardening](14-Security-Hardening.md), [Homelab Overview](00-Homelab-Overview.md), [Docker notes](docker-notes.md)
+Related: [Docker and Compose](02-Docker-and-Compose.md), [Homelab Monitor](06-Homelab-Monitor.md), [Network Monitor](11-Network-Monitor.md), [Security Hardening](13-Security-Hardening.md), [Homelab Overview](00-Homelab-Overview.md), [Docker notes](docker-notes.md)
 
-Security: Prometheus and Grafana are loopback-only, and node_exporter's port `9100` is not exposed to the LAN. See [Security Hardening](14-Security-Hardening.md).
+Security: Prometheus and Grafana are loopback-only, and node_exporter's port `9100` is not exposed to the LAN. See [Security Hardening](13-Security-Hardening.md).

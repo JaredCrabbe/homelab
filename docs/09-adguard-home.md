@@ -36,7 +36,7 @@ ports:
   - "127.0.0.1:8088:8088"
 ```
 
-The admin page on `127.0.0.1:8088` works from the host, and access to `192.168.10.151:8088` from the LAN fails as intended. LAN DNS resolution was confirmed afterwards with `nslookup example.com 192.168.10.151`. See [Security Hardening](14-Security-Hardening.md) for the full change record and validation.
+The admin page on `127.0.0.1:8088` works from the host, and access to `192.168.10.151:8088` from the LAN fails as intended. LAN DNS resolution was confirmed afterwards with `nslookup example.com 192.168.10.151`. See [Security Hardening](13-Security-Hardening.md) for the full change record and validation.
 
 ## Availability
 
@@ -46,4 +46,4 @@ The homelab host is also a dual-boot daily desktop, so AdGuard Home is unavailab
 
 DNS fundamentals, Docker Compose, port configuration, administrative interface isolation, network-service troubleshooting, container health monitoring, and self-hosted infrastructure administration.
 
-Related: [Nginx Proxy Manager](09-nginx-proxy-manager.md), [Tailscale Remote Access](13-Tailscale-Remote-Access.md), [Homepage](11-homepage.md), [Network Monitor](12-Network-Monitor.md), [Security Hardening](14-Security-Hardening.md)
+Related: [Nginx Proxy Manager](08-nginx-proxy-manager.md), [Tailscale Remote Access](12-Tailscale-Remote-Access.md), [Homepage](10-homepage.md), [Network Monitor](11-Network-Monitor.md), [Security Hardening](13-Security-Hardening.md)

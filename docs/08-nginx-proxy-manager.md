@@ -39,10 +39,10 @@ ports:
   - "443:443"
 ```
 
-HTTP and HTTPS proxy traffic remain available to the LAN. The admin page on `127.0.0.1:81` works from the host, and access to `192.168.10.151:81` from the LAN fails as intended. See [Security Hardening](14-Security-Hardening.md) for the full change record and validation.
+HTTP and HTTPS proxy traffic remain available to the LAN. The admin page on `127.0.0.1:81` works from the host, and access to `192.168.10.151:81` from the LAN fails as intended. See [Security Hardening](13-Security-Hardening.md) for the full change record and validation.
 
 ## Skills demonstrated
 
 Docker Compose, reverse-proxy concepts, HTTP/HTTPS, internal service routing, web-based infrastructure administration, administrative interface isolation, container monitoring, and Linux service troubleshooting.
 
-Related: [Homepage](11-homepage.md), [AdGuard Home](10-adguard-home.md), [Tailscale Remote Access](13-Tailscale-Remote-Access.md), [Nginx Container](03-Nginx-Container.md), [Security Hardening](14-Security-Hardening.md)
+Related: [Homepage](10-homepage.md), [AdGuard Home](09-adguard-home.md), [Tailscale Remote Access](12-Tailscale-Remote-Access.md), [Nginx Container](03-Nginx-Container.md), [Security Hardening](13-Security-Hardening.md)

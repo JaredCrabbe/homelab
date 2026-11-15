@@ -58,12 +58,12 @@ Because this monitor runs periodically and exits after one check, `inactive (dea
 
 ## Notification endpoint note
 
-The notification URL uses the host's LAN address (`192.168.10.151:8082`). If ntfy's published port or binding changes, update the endpoint here and in the [Homelab Monitor](07-Homelab-Monitor.md) settings.
+The notification URL uses the host's LAN address (`192.168.10.151:8082`). If ntfy's published port or binding changes, update the endpoint here and in the [Homelab Monitor](06-Homelab-Monitor.md) settings.
 
 ## Skills demonstrated
 
 Python scripting, Linux interface inspection, ICMP checks, latency and packet-loss parsing, JSON state persistence, transition-based alerting, ntfy integration, systemd timers, log inspection, and network troubleshooting.
 
-Related: [Homelab Monitor](07-Homelab-Monitor.md), [Tailscale Remote Access](13-Tailscale-Remote-Access.md), [AdGuard Home](10-adguard-home.md), [Ways to Scan a Network](Ways%20to%20Scan%20a%20Network.md)
+Related: [Homelab Monitor](06-Homelab-Monitor.md), [Tailscale Remote Access](12-Tailscale-Remote-Access.md), [AdGuard Home](09-adguard-home.md), [Ways to Scan a Network](Ways%20to%20Scan%20a%20Network.md)
 
-Security: ntfy was reviewed during the hardening work and no authentication was added, so this monitor continues to publish to the LAN address unchanged. See [Security Hardening](14-Security-Hardening.md).
+Security: ntfy was reviewed during the hardening work and no authentication was added, so this monitor continues to publish to the LAN address unchanged. See [Security Hardening](13-Security-Hardening.md).

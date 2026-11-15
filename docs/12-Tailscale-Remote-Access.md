@@ -69,7 +69,7 @@ Remote administration is performed through Tailscale SSH rather than through LAN
 
 Remote access is not required for the Nginx Proxy Manager admin interface (`81`) or the AdGuard Home admin interface (`8088`), so neither is available remotely.
 
-The SSH policy allows Tailscale members to connect to the tagged homelab machine as non-root users only; root access is not allowed. Tailscale connectivity and SSH were tested successfully after the change. A Tailscale SELinux warning remains and has not been resolved. See [Security Hardening](14-Security-Hardening.md) for the full change record.
+The SSH policy allows Tailscale members to connect to the tagged homelab machine as non-root users only; root access is not allowed. Tailscale connectivity and SSH were tested successfully after the change. A Tailscale SELinux warning remains and has not been resolved. See [Security Hardening](13-Security-Hardening.md) for the full change record.
 
 ## Skills Demonstrated
 
@@ -89,4 +89,4 @@ This project demonstrates practical experience with:
 
 **Completed and tested.** Tailscale is installed on the homelab host and remote access has been enabled and verified from an authorised device. Access is restricted to the services listed above.
 
-Related: [Nginx Proxy Manager](09-nginx-proxy-manager.md), [AdGuard Home](10-adguard-home.md), [Network Monitor](12-Network-Monitor.md), [Fedora Linux Foundation](01-Fedora-Linux-Foundation.md), [Security Hardening](14-Security-Hardening.md)
+Related: [Nginx Proxy Manager](08-nginx-proxy-manager.md), [AdGuard Home](09-adguard-home.md), [Network Monitor](11-Network-Monitor.md), [Fedora Linux Foundation](01-Fedora-Linux-Foundation.md), [Security Hardening](13-Security-Hardening.md)

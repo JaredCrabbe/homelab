@@ -179,5 +179,5 @@ Output formats: `-oN` (normal text), `-oX` (XML), `-oG` (greppable), `-oA name` 
 
 ---
 
-Related: [Homelab Overview](00-Homelab-Overview.md), [Network Monitor](12-Network-Monitor.md), [Security baseline](security-baseline.md)
+Related: [Homelab Overview](00-Homelab-Overview.md), [Network Monitor](11-Network-Monitor.md), [Security baseline](security-baseline.md)
  sorted, tell me and I'll retry. It will create test.md containing just "test".

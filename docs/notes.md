@@ -60,10 +60,10 @@ Review `git status` and staged changes before committing. Do not commit secrets,
 - Tailscale installed on the host; remote access enabled and verified from an authorised device
 - Network security baseline in progress (kept local, not committed to Git)
 
-Related: [Homelab Overview](00-Homelab-Overview.md), [Docker notes](docker-notes.md), [Tailscale Remote Access](13-Tailscale-Remote-Access.md)
+Related: [Homelab Overview](00-Homelab-Overview.md), [Docker notes](docker-notes.md), [Tailscale Remote Access](12-Tailscale-Remote-Access.md)
 
 - Network monitor timer confirmed running (2026-10-07)
 
-- Security hardening phase completed and validated (2026-10-08); see [Security Hardening](14-Security-Hardening.md)
+- Security hardening phase completed and validated (2026-10-08); see [Security Hardening](13-Security-Hardening.md)
 
-- Prometheus, node_exporter, and Grafana deployed and verified (2026-10-19); see [Prometheus and Grafana](15-Prometheus-and-Grafana.md)
+- Prometheus, node_exporter, and Grafana deployed and verified (2026-10-19); see [Prometheus and Grafana](14-Prometheus-and-Grafana.md)

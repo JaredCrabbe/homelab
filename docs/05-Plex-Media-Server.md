@@ -29,6 +29,6 @@ Plex is monitored by the custom Docker health monitor. A real Plex/NVIDIA incide
 - Integrating a real incident with monitoring and alerting
 
 
-Related: [NAS Storage](04-NAS-Storage.md), [Homelab Monitor](07-Homelab-Monitor.md), [Docker and Compose](02-Docker-and-Compose.md)
+Related: [NAS Storage](03-NAS-Storage.md), [Homelab Monitor](06-Homelab-Monitor.md), [Docker and Compose](02-Docker-and-Compose.md)
 
-Security: Plex (`32400`) is an accepted exception and was intentionally not hardened during the security hardening work. A Plex security review is deferred. See [Security Hardening](14-Security-Hardening.md).
+Security: Plex (`32400`) is an accepted exception and was intentionally not hardened during the security hardening work. A Plex security review is deferred. See [Security Hardening](13-Security-Hardening.md).

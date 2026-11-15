@@ -180,7 +180,7 @@ Reasoning:
 ## Accepted exceptions and known issues
 
 - **Plex (`32400`):** accepted exception; not hardened during this work.
-- Added after the hardening pass (2026-10-19): Prometheus (`127.0.0.1:9090`) and Grafana (`127.0.0.1:3000`) are bound to loopback and are not part of the intended LAN exposure. node_exporter runs on host networking and listens on all interfaces on `9100`, but that port is not in the firewall's allowed set, and a phone on the LAN could not connect to it. None of these ports are in the Tailscale access policy. See [Prometheus and Grafana](15-Prometheus-and-Grafana.md).
+- Added after the hardening pass (2026-10-19): Prometheus (`127.0.0.1:9090`) and Grafana (`127.0.0.1:3000`) are bound to loopback and are not part of the intended LAN exposure. node_exporter runs on host networking and listens on all interfaces on `9100`, but that port is not in the firewall's allowed set, and a phone on the LAN could not connect to it. None of these ports are in the Tailscale access policy. See [Prometheus and Grafana](14-Prometheus-and-Grafana.md).
 - **Tailscale SELinux warning:** still present. Tailscale SSH works, but the warning is unresolved and has not been investigated here.
 - **Combined desktop and server host:** accepted architectural constraint, as described in the context above.
 
@@ -219,4 +219,4 @@ Attack surface reduction, administrative interface isolation, Docker port public
 
 **Hardening phase completed and validated.** Administrative interface isolation, least-privilege Tailscale access, SSH restriction, and firewall range reduction are implemented and tested. The accepted exception and deferred reviews above remain open.
 
-Related: [Nginx Proxy Manager](09-nginx-proxy-manager.md), [AdGuard Home](10-adguard-home.md), [Tailscale Remote Access](13-Tailscale-Remote-Access.md), [Samba SMB](05-Samba-SMB.md), [Plex Media Server](06-Plex-Media-Server.md), [Homelab Monitor](07-Homelab-Monitor.md), [Network Monitor](12-Network-Monitor.md), [Homelab Overview](00-Homelab-Overview.md),[Prometheus and Grafana](15-Prometheus-and-Grafana.md)
+Related: [Nginx Proxy Manager](08-nginx-proxy-manager.md), [AdGuard Home](09-adguard-home.md), [Tailscale Remote Access](12-Tailscale-Remote-Access.md), [Samba SMB](04-Samba-SMB.md), [Plex Media Server](05-Plex-Media-Server.md), [Homelab Monitor](06-Homelab-Monitor.md), [Network Monitor](11-Network-Monitor.md), [Homelab Overview](00-Homelab-Overview.md),[Prometheus and Grafana](14-Prometheus-and-Grafana.md)
